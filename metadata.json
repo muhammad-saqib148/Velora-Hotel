@@ -1,0 +1,6 @@
+{
+  "name": "Velora Grand Hotel & Spa",
+  "description": "5-Star Luxury Hotel website featuring room reservations, fine dining, spa booking, photo gallery, guest reviews, special offers, and an admin management dashboard.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

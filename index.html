@@ -1,0 +1,864 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Velora Grand Hotel & Spa | 5-Star Luxury Hotel & Resort</title>
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+  <!-- Font Awesome 6 Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+
+  <!-- Bootstrap 5.3 CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
+
+  <!-- Custom Luxury Stylesheet -->
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+
+  <!-- ==========================================================================
+     Navbar Section
+     ========================================================================== -->
+  <nav class="navbar navbar-expand-xl velora-navbar fixed-top">
+    <div class="container-fluid px-lg-5">
+      <!-- Brand Logo -->
+      <a class="navbar-brand me-4" href="#home">
+        <span class="logo-title">VELORA</span>
+        <span class="logo-subtitle">GRAND HOTEL & SPA</span>
+      </a>
+
+      <!-- Mobile Hamburger Button -->
+      <button class="navbar-toggler text-gold border-gold" type="button" data-bs-toggle="collapse" data-bs-target="#veloraNavbar" aria-controls="veloraNavbar" aria-expanded="false" aria-label="Toggle navigation">
+        <i class="fas fa-bars"></i>
+      </button>
+
+      <!-- Horizontal Menu Bar -->
+      <div class="collapse navbar-collapse" id="veloraNavbar">
+        <ul class="navbar-nav mx-auto mb-2 mb-lg-0">
+          <li class="nav-item"><a class="nav-link nav-link-item active" href="#home">Home</a></li>
+          <li class="nav-item"><a class="nav-link nav-link-item" href="#about">About</a></li>
+          <li class="nav-item"><a class="nav-link nav-link-item" href="#rooms">Rooms & Suites</a></li>
+          <li class="nav-item"><a class="nav-link nav-link-item" href="#dining">Dining</a></li>
+          <li class="nav-item"><a class="nav-link nav-link-item" href="#spa">Spa & Wellness</a></li>
+          <li class="nav-item"><a class="nav-link nav-link-item" href="#experiences">Experiences</a></li>
+          <li class="nav-item"><a class="nav-link nav-link-item" href="#offers">Offers</a></li>
+          <li class="nav-item"><a class="nav-link nav-link-item" href="#gallery">Gallery</a></li>
+          <li class="nav-item"><a class="nav-link nav-link-item" href="#reviews">Reviews</a></li>
+          <li class="nav-item"><a class="nav-link nav-link-item" href="#contact">Contact</a></li>
+        </ul>
+
+        <!-- Right Side Utility Controls -->
+        <div class="d-flex align-items-center gap-2">
+          <button class="btn btn-outline-gold btn-sm" onclick="openMyBookingsModal()">
+            <i class="fas fa-suitcase me-1"></i> My Bookings
+          </button>
+          <a href="#booking" class="btn btn-gold btn-sm">Book Your Stay</a>
+          <button class="btn btn-outline-light btn-sm ms-1" onclick="openAdminDashboard()" title="Admin Management Panel">
+            <i class="fas fa-user-shield"></i>
+          </button>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <!-- ==========================================================================
+     Hero Slider Carousel
+     ========================================================================== -->
+  <section id="home" class="hero-section">
+    <div id="heroCarousel" class="carousel slide carousel-fade hero-carousel" data-bs-ride="carousel" data-bs-interval="5000">
+      
+      <!-- Indicators -->
+      <div class="carousel-indicators">
+        <button type="button" data-bs-target="#heroCarousel" data-bs-slide-to="0" class="active" aria-current="true"></button>
+        <button type="button" data-bs-target="#heroCarousel" data-bs-slide-to="1"></button>
+        <button type="button" data-bs-target="#heroCarousel" data-bs-slide-to="2"></button>
+        <button type="button" data-bs-target="#heroCarousel" data-bs-slide-to="3"></button>
+        <button type="button" data-bs-target="#heroCarousel" data-bs-slide-to="4"></button>
+        <button type="button" data-bs-target="#heroCarousel" data-bs-slide-to="5"></button>
+        <button type="button" data-bs-target="#heroCarousel" data-bs-slide-to="6"></button>
+      </div>
+
+      <!-- Slides -->
+      <div class="carousel-inner">
+        <!-- Slide 1: Exterior -->
+        <div class="carousel-item active" style="background-image: url('https://images.unsplash.com/photo-1566073771259-6a8506099945?auto=format&fit=crop&w=1920&q=85');">
+          <div class="hero-overlay">
+            <div class="hero-caption">
+              <span class="hero-tag">ESCAPE TO VELORA</span>
+              <h1 class="hero-title">Where luxury meets serenity.</h1>
+              <p class="hero-desc">Experience refined accommodation, exceptional dining and unforgettable hospitality at Velora Grand Hotel & Spa.</p>
+              <div class="d-flex justify-content-center gap-3">
+                <a href="#booking" class="btn btn-gold">BOOK YOUR STAY</a>
+                <a href="#rooms" class="btn btn-outline-gold">EXPLORE ROOMS</a>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Slide 2: Grand Lobby -->
+        <div class="carousel-item" style="background-image: url('https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?auto=format&fit=crop&w=1920&q=85');">
+          <div class="hero-overlay">
+            <div class="hero-caption">
+              <span class="hero-tag">OPULENT ELEGANCE</span>
+              <h1 class="hero-title">A grand welcome awaits.</h1>
+              <p class="hero-desc">Immerse yourself in world-class architecture, crystal chandeliers, and bespoke 24/7 concierge excellence.</p>
+              <div class="d-flex justify-content-center gap-3">
+                <a href="#booking" class="btn btn-gold">BOOK YOUR STAY</a>
+                <a href="#gallery" class="btn btn-outline-gold">VIEW GALLERY</a>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Slide 3: Bedroom -->
+        <div class="carousel-item" style="background-image: url('https://images.unsplash.com/photo-1618773928121-c32242e63f39?auto=format&fit=crop&w=1920&q=85');">
+          <div class="hero-overlay">
+            <div class="hero-caption">
+              <span class="hero-tag">UNMATCHED COMFORT</span>
+              <h1 class="hero-title">Santuary for the senses.</h1>
+              <p class="hero-desc">Rest peacefully in hand-crafted Egyptian cotton linens with panoramic views of the city and botanical gardens.</p>
+              <div class="d-flex justify-content-center gap-3">
+                <a href="#rooms" class="btn btn-gold">VIEW SUITES</a>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Slide 4: Presidential Suite -->
+        <div class="carousel-item" style="background-image: url('https://images.unsplash.com/photo-1590490360182-c33d57733427?auto=format&fit=crop&w=1920&q=85');">
+          <div class="hero-overlay">
+            <div class="hero-caption">
+              <span class="hero-tag">PRESIDENTIAL LIVING</span>
+              <h1 class="hero-title">The height of sophistication.</h1>
+              <p class="hero-desc">Bespoke private butler service, grand piano, private terrace, and steam room suites designed for global royalty.</p>
+              <div class="d-flex justify-content-center gap-3">
+                <a href="#booking" class="btn btn-gold">RESERVE SUITE</a>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Slide 5: Swimming Pool -->
+        <div class="carousel-item" style="background-image: url('https://images.unsplash.com/photo-1571896349842-33c89424de2d?auto=format&fit=crop&w=1920&q=85');">
+          <div class="hero-overlay">
+            <div class="hero-caption">
+              <span class="hero-tag">INFINITY RELAXATION</span>
+              <h1 class="hero-title">Temperature-controlled bliss.</h1>
+              <p class="hero-desc">Unwind at our rooftop infinity pool featuring poolside champagne service and breathtaking sunset vistas.</p>
+              <div class="d-flex justify-content-center gap-3">
+                <a href="#experiences" class="btn btn-gold">EXPERIENCES</a>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Slide 6: Spa -->
+        <div class="carousel-item" style="background-image: url('https://images.unsplash.com/photo-1540555700478-4be289fbecef?auto=format&fit=crop&w=1920&q=85');">
+          <div class="hero-overlay">
+            <div class="hero-caption">
+              <span class="hero-tag">HOLISTIC WELLNESS</span>
+              <h1 class="hero-title">Revitalize mind, body & soul.</h1>
+              <p class="hero-desc">Indulge in hydrothermal steam circuits, organic aromatherapy rituals, and therapeutic massage treatments.</p>
+              <div class="d-flex justify-content-center gap-3">
+                <a href="#spa" class="btn btn-gold">EXPLORE SPA</a>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Slide 7: Fine Dining -->
+        <div class="carousel-item" style="background-image: url('https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?auto=format&fit=crop&w=1920&q=85');">
+          <div class="hero-overlay">
+            <div class="hero-caption">
+              <span class="hero-tag">GASTRONOMIC JOURNEY</span>
+              <h1 class="hero-title">Verde Signature Dining.</h1>
+              <p class="hero-desc">Michelin-inspired culinary masterpieces crafted by world-renowned chefs paired with fine sommelier vintages.</p>
+              <div class="d-flex justify-content-center gap-3">
+                <a href="#dining" class="btn btn-gold">DISCOVER DINING</a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Controls -->
+      <button class="carousel-control-prev" type="button" data-bs-target="#heroCarousel" data-bs-slide="prev">
+        <i class="fas fa-chevron-left text-white"></i>
+      </button>
+      <button class="carousel-control-next" type="button" data-bs-target="#heroCarousel" data-bs-slide="next">
+        <i class="fas fa-chevron-right text-white"></i>
+      </button>
+    </div>
+  </section>
+
+  <!-- ==========================================================================
+     Floating Quick Booking Bar
+     ========================================================================== -->
+  <div class="container quick-booking-bar">
+    <div class="quick-booking-card">
+      <form onsubmit="event.preventDefault(); document.getElementById('booking').scrollIntoView({behavior:'smooth'});">
+        <div class="row g-3 align-items-end">
+          <div class="col-md-3">
+            <label><i class="far fa-calendar-alt text-gold me-1"></i> Check-In</label>
+            <input type="date" class="form-control" id="quickCheckIn">
+          </div>
+          <div class="col-md-3">
+            <label><i class="far fa-calendar-check text-gold me-1"></i> Check-Out</label>
+            <input type="date" class="form-control" id="quickCheckOut">
+          </div>
+          <div class="col-md-3">
+            <label><i class="fas fa-user-friends text-gold me-1"></i> Guests & Suite</label>
+            <select class="form-select" id="quickRoomType">
+              <option value="deluxe-king">Deluxe King Room ($280/night)</option>
+              <option value="executive-suite">Executive Suite ($450/night)</option>
+              <option value="velora-garden-suite">Velora Garden Suite ($520/night)</option>
+              <option value="family-residence">Family Residence ($680/night)</option>
+              <option value="presidential-suite">Presidential Suite ($1,200/night)</option>
+              <option value="royal-grand-suite">Royal Grand Suite ($1,800/night)</option>
+            </select>
+          </div>
+          <div class="col-md-3">
+            <button type="submit" class="btn btn-gold w-100 py-2">
+              <i class="fas fa-search me-1"></i> Check Rates
+            </button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ==========================================================================
+     Welcome Section
+     ========================================================================== -->
+  <section id="about" class="py-5 my-5">
+    <div class="container">
+      <div class="row align-items-center g-5">
+        <div class="col-lg-6">
+          <div class="welcome-img-wrapper">
+            <img src="https://images.unsplash.com/photo-1566073771259-6a8506099945?auto=format&fit=crop&w=1000&q=80" alt="Velora Grand Exterior" class="welcome-img" loading="lazy" onerror="this.src='https://picsum.photos/seed/velora/800/600'">
+          </div>
+        </div>
+        <div class="col-lg-6">
+          <span class="section-subtitle">Welcome to Velora</span>
+          <h2 class="section-title">An International Sanctuary of Opulence & Peace</h2>
+          <div class="section-divider start"></div>
+          <p class="text-muted leading-relaxed mb-4">
+            Nestled amid lush botanical gardens with breathtaking mountain vistas, <strong>Velora Grand Hotel & Spa</strong> stands as a landmark of 5-star hospitality. Since our inception, we have championed timeless grandeur, personalized guest attention, and world-class luxury standards.
+          </p>
+          <p class="text-muted leading-relaxed mb-4">
+            Whether residing in our sprawling Presidential Suites, indulging in Michelin-inspired culinary arts at <em>Verde</em>, or restoring balance in our hydrotherapy spa retreats, every moment at Velora is curated for distinction.
+          </p>
+
+          <!-- Badges & Stats Grid -->
+          <div class="row g-3">
+            <div class="col-6 col-md-3">
+              <div class="stat-box">
+                <div class="stat-number">25+</div>
+                <div class="stat-label">Years Prestige</div>
+              </div>
+            </div>
+            <div class="col-6 col-md-3">
+              <div class="stat-box">
+                <div class="stat-number">120</div>
+                <div class="stat-label">Luxury Rooms</div>
+              </div>
+            </div>
+            <div class="col-6 col-md-3">
+              <div class="stat-box">
+                <div class="stat-number">15+</div>
+                <div class="stat-label">Facilities</div>
+              </div>
+            </div>
+            <div class="col-6 col-md-3">
+              <div class="stat-box">
+                <div class="stat-number">24/7</div>
+                <div class="stat-label">Concierge</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ==========================================================================
+     Rooms & Suites Section
+     ========================================================================== -->
+  <section id="rooms" class="py-5 bg-ivory">
+    <div class="container">
+      <div class="text-center max-w-3xl mx-auto mb-4">
+        <span class="section-subtitle">Accommodations</span>
+        <h2 class="section-title">Luxurious Rooms & Suites</h2>
+        <div class="section-divider"></div>
+        <p class="text-muted">Impeccably appointed accommodations combining classical European sophistication with modern technology.</p>
+      </div>
+
+      <!-- Filter Tabs -->
+      <div class="filter-tabs" id="roomsFilterTabs">
+        <button class="filter-btn active" onclick="filterRooms('all', this)">All Suites & Rooms</button>
+        <button class="filter-btn" onclick="filterRooms('suites', this)">Suites</button>
+        <button class="filter-btn" onclick="filterRooms('rooms', this)">Rooms</button>
+        <button class="filter-btn" onclick="filterRooms('residences', this)">Residences</button>
+      </div>
+
+      <!-- Rooms Grid Container -->
+      <div class="row g-4" id="roomsContainer">
+        <!-- Rendered dynamically by app.js -->
+      </div>
+    </div>
+  </section>
+
+  <!-- ==========================================================================
+     Hotel Experiences Section
+     ========================================================================== -->
+  <section id="experiences" class="py-5 my-5">
+    <div class="container">
+      <div class="text-center mb-5">
+        <span class="section-subtitle">Curated Curations</span>
+        <h2 class="section-title">Unrivaled Hotel Experiences</h2>
+        <div class="section-divider"></div>
+      </div>
+
+      <div class="row g-4" id="experiencesContainer">
+        <!-- Rendered dynamically by app.js -->
+      </div>
+    </div>
+  </section>
+
+  <!-- ==========================================================================
+     Dining Section
+     ========================================================================== -->
+  <section id="dining" class="py-5 bg-dark-emerald text-white">
+    <div class="container py-4">
+      <div class="text-center mb-5">
+        <span class="section-subtitle text-gold">Michelin Culinary Art</span>
+        <h2 class="section-title text-white">Verde Signature Restaurant</h2>
+        <div class="section-divider"></div>
+        <p class="text-white-50">Elegance on every plate. Crafted by internationally renowned Executive Chefs.</p>
+      </div>
+
+      <!-- Dining Category Buttons -->
+      <div class="filter-tabs" id="diningTabs">
+        <button class="filter-btn active" onclick="switchDiningTab('breakfast', this)">Artisanal Breakfast</button>
+        <button class="filter-btn" onclick="switchDiningTab('finedining', this)">Fine Dining Dinner</button>
+        <button class="filter-btn" onclick="switchDiningTab('international', this)">International</button>
+        <button class="filter-btn" onclick="switchDiningTab('rooftop', this)">Rooftop Lounge</button>
+      </div>
+
+      <!-- Dining Menu Container -->
+      <div id="diningMenuContainer" class="max-w-4xl mx-auto">
+        <!-- Rendered dynamically by app.js -->
+      </div>
+    </div>
+  </section>
+
+  <!-- ==========================================================================
+     Spa & Wellness Section
+     ========================================================================== -->
+  <section id="spa" class="py-5 my-5">
+    <div class="container">
+      <div class="text-center mb-5">
+        <span class="section-subtitle">Holistic Serenity</span>
+        <h2 class="section-title">Spa & Wellness Center</h2>
+        <div class="section-divider"></div>
+        <p class="text-muted">A tranquil oasis dedicated to total physical renewal and peace of mind.</p>
+      </div>
+
+      <div class="row g-4" id="spaContainer">
+        <!-- Rendered dynamically by app.js -->
+      </div>
+    </div>
+  </section>
+
+  <!-- ==========================================================================
+     Booking Reservation System Section
+     ========================================================================== -->
+  <section id="booking" class="booking-section">
+    <div class="container">
+      <div class="row g-5 align-items-center">
+        <!-- Left Title Column -->
+        <div class="col-lg-5">
+          <span class="section-subtitle text-gold">Instant Reservation</span>
+          <h2 class="section-title text-white">Reserve Your Stay at Velora</h2>
+          <p class="text-white-50 mb-4 leading-relaxed">
+            Secure your preferred suite with instant reservation confirmation, zero booking fees, and 24/7 concierge support.
+          </p>
+
+          <div class="d-flex align-items-center gap-3 mb-3">
+            <div class="p-3 bg-emerald border border-gold rounded text-gold fs-4"><i class="fas fa-shield-alt"></i></div>
+            <div>
+              <h6 class="text-white mb-0 font-heading">Best Rate Guaranteed</h6>
+              <small class="text-white-50">Direct booking perks & complimentary welcome amenities.</small>
+            </div>
+          </div>
+
+          <div class="d-flex align-items-center gap-3">
+            <div class="p-3 bg-emerald border border-gold rounded text-gold fs-4"><i class="fas fa-glass-cheers"></i></div>
+            <div>
+              <h6 class="text-white mb-0 font-heading">Welcome Beverage</h6>
+              <small class="text-white-50">Complimentary vintage champagne upon arrival.</small>
+            </div>
+          </div>
+        </div>
+
+        <!-- Right Reservation Form Card -->
+        <div class="col-lg-7">
+          <div class="booking-form-card">
+            <h3 class="font-heading text-emerald mb-4">Reservation Details</h3>
+            
+            <form id="bookingForm">
+              <div class="row g-3">
+                <div class="col-md-6">
+                  <label class="form-label fs-7 fw-bold text-emerald">Full Name *</label>
+                  <input type="text" class="form-control" id="bookName" placeholder="e.g. Lord Alexander" required>
+                </div>
+                <div class="col-md-6">
+                  <label class="form-label fs-7 fw-bold text-emerald">Email Address *</label>
+                  <input type="email" class="form-control" id="bookEmail" placeholder="e.g. guest@velora.com" required>
+                </div>
+                <div class="col-md-6">
+                  <label class="form-label fs-7 fw-bold text-emerald">Phone Number *</label>
+                  <input type="tel" class="form-control" id="bookPhone" placeholder="+92 349 1905800" required>
+                </div>
+                <div class="col-md-6">
+                  <label class="form-label fs-7 fw-bold text-emerald">Selected Room / Suite *</label>
+                  <select class="form-select" id="bookRoomSelect" required>
+                    <!-- Options populated by app.js -->
+                  </select>
+                </div>
+                <div class="col-md-6">
+                  <label class="form-label fs-7 fw-bold text-emerald">Check-in Date *</label>
+                  <input type="date" class="form-control" id="bookCheckIn" required>
+                </div>
+                <div class="col-md-6">
+                  <label class="form-label fs-7 fw-bold text-emerald">Check-out Date *</label>
+                  <input type="date" class="form-control" id="bookCheckOut" required>
+                </div>
+                <div class="col-6 col-md-3">
+                  <label class="form-label fs-7 fw-bold text-emerald">Adults</label>
+                  <select class="form-select" id="bookAdults">
+                    <option value="1">1 Adult</option>
+                    <option value="2" selected>2 Adults</option>
+                    <option value="3">3 Adults</option>
+                    <option value="4">4 Adults</option>
+                  </select>
+                </div>
+                <div class="col-6 col-md-3">
+                  <label class="form-label fs-7 fw-bold text-emerald">Children</label>
+                  <select class="form-select" id="bookChildren">
+                    <option value="0" selected>0 Children</option>
+                    <option value="1">1 Child</option>
+                    <option value="2">2 Children</option>
+                  </select>
+                </div>
+                <div class="col-md-6">
+                  <label class="form-label fs-7 fw-bold text-emerald">Promo Code</label>
+                  <input type="text" class="form-control" id="bookPromoCode" placeholder="e.g. WEEKEND20">
+                </div>
+                <div class="col-12">
+                  <label class="form-label fs-7 fw-bold text-emerald">Special Requests</label>
+                  <textarea class="form-control" id="bookSpecialRequests" rows="2" placeholder="e.g. High floor room, dietary requirements, airport shuttle..."></textarea>
+                </div>
+              </div>
+
+              <!-- Live Cost Calculation Box -->
+              <div class="summary-card mt-4">
+                <h5 class="font-heading text-emerald mb-3">Price Calculation Summary</h5>
+                <div class="summary-row">
+                  <span>Duration:</span>
+                  <span><strong id="summaryNights">1</strong> Night(s)</span>
+                </div>
+                <div class="summary-row">
+                  <span>Nightly Rate:</span>
+                  <span id="summaryRate">$280.00</span>
+                </div>
+                <div class="summary-row">
+                  <span>Subtotal:</span>
+                  <span id="summarySubtotal">$280.00</span>
+                </div>
+                <div class="summary-row">
+                  <span>Luxury Tax & Fees (12%):</span>
+                  <span id="summaryTax">$33.60</span>
+                </div>
+                <div class="summary-row text-success">
+                  <span>Promo Discount:</span>
+                  <span id="summaryDiscount">-$0.00</span>
+                </div>
+                <div class="summary-total">
+                  <span>Total Amount Due:</span>
+                  <span id="summaryTotal">$313.60</span>
+                </div>
+              </div>
+
+              <button type="submit" class="btn btn-gold w-100 py-3 mt-4">
+                <i class="fas fa-check-circle me-2"></i> Confirm Reservation & Book Now
+              </button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ==========================================================================
+     Special Offers Section
+     ========================================================================== -->
+  <section id="offers" class="py-5 my-5">
+    <div class="container">
+      <div class="text-center mb-5">
+        <span class="section-subtitle">Exclusive Packages</span>
+        <h2 class="section-title">Special Hotel Offers</h2>
+        <div class="section-divider"></div>
+      </div>
+
+      <div class="row g-4" id="offersContainer">
+        <!-- Rendered dynamically by app.js -->
+      </div>
+    </div>
+  </section>
+
+  <!-- ==========================================================================
+     Gallery Section
+     ========================================================================== -->
+  <section id="gallery" class="py-5 bg-ivory">
+    <div class="container">
+      <div class="text-center mb-4">
+        <span class="section-subtitle">Visual Tour</span>
+        <h2 class="section-title">Hotel Photo Gallery</h2>
+        <div class="section-divider"></div>
+      </div>
+
+      <!-- Gallery Filter Tabs -->
+      <div class="filter-tabs" id="galleryFilterTabs">
+        <button class="filter-btn active" onclick="filterGallery('all', this)">All</button>
+        <button class="filter-btn" onclick="filterGallery('exterior', this)">Exterior</button>
+        <button class="filter-btn" onclick="filterGallery('lobby', this)">Lobby</button>
+        <button class="filter-btn" onclick="filterGallery('rooms', this)">Rooms & Suites</button>
+        <button class="filter-btn" onclick="filterGallery('pool', this)">Pool</button>
+        <button class="filter-btn" onclick="filterGallery('restaurant', this)">Dining</button>
+        <button class="filter-btn" onclick="filterGallery('spa', this)">Spa</button>
+      </div>
+
+      <!-- Gallery Masonry Grid -->
+      <div class="row g-4" id="galleryContainer">
+        <!-- Rendered dynamically by app.js -->
+      </div>
+    </div>
+  </section>
+
+  <!-- ==========================================================================
+     Reviews Section
+     ========================================================================== -->
+  <section id="reviews" class="py-5 my-5">
+    <div class="container">
+      <div class="d-flex justify-content-between align-items-end mb-4">
+        <div>
+          <span class="section-subtitle">Guest Testimonials</span>
+          <h2 class="section-title mb-0">What Our Guests Say</h2>
+        </div>
+        <button class="btn btn-outline-gold btn-sm" data-bs-toggle="modal" data-bs-target="#addReviewModal">
+          <i class="fas fa-edit me-1"></i> Write a Review
+        </button>
+      </div>
+
+      <div class="row g-4" id="reviewsContainer">
+        <!-- Rendered dynamically by app.js -->
+      </div>
+    </div>
+  </section>
+
+  <!-- ==========================================================================
+     FAQ & Contact Section
+     ========================================================================== -->
+  <section id="contact" class="py-5 bg-ivory">
+    <div class="container">
+      <div class="row g-5">
+        <!-- FAQ Column -->
+        <div class="col-lg-6">
+          <span class="section-subtitle">Information & Policies</span>
+          <h2 class="section-title">Frequently Asked Questions</h2>
+          <div class="section-divider start"></div>
+          
+          <div class="accordion accordion-velora mt-4" id="faqAccordion">
+            <!-- Rendered dynamically by app.js -->
+          </div>
+        </div>
+
+        <!-- Contact Column -->
+        <div class="col-lg-6">
+          <span class="section-subtitle">Concierge Desk</span>
+          <h2 class="section-title">Get in Touch</h2>
+          <div class="section-divider start"></div>
+
+          <div class="bg-white p-4 rounded border shadow-sm mt-4">
+            <form id="contactForm">
+              <div class="mb-3">
+                <label class="form-label fs-7 fw-bold text-emerald">Your Full Name</label>
+                <input type="text" class="form-control" id="contactName" required>
+              </div>
+              <div class="mb-3">
+                <label class="form-label fs-7 fw-bold text-emerald">Email Address</label>
+                <input type="email" class="form-control" id="contactEmail" required>
+              </div>
+              <div class="mb-3">
+                <label class="form-label fs-7 fw-bold text-emerald">Message or Inquiry</label>
+                <textarea class="form-control" id="contactMessage" rows="4" required></textarea>
+              </div>
+              <button type="submit" class="btn btn-gold w-100 py-2">
+                <i class="fas fa-paper-plane me-2"></i> Send Inquiry
+              </button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ==========================================================================
+     Footer - WHITE TEXT REQUIREMENT
+     ========================================================================== -->
+  <footer class="velora-footer">
+    <div class="container">
+      <div class="row g-4 mb-5">
+        <!-- Brand Info -->
+        <div class="col-lg-4">
+          <span class="footer-logo-title d-block mb-2">VELORA</span>
+          <small class="text-gold text-uppercase letter-spacing-2 d-block mb-3">GRAND HOTEL & SPA</small>
+          <p class="text-white-50 fs-7 mb-4">
+            A 5-star haven of peace, classical elegance, and unmatched international hospitality.
+          </p>
+          <div class="d-flex">
+            <a href="#" class="social-icon-btn"><i class="fab fa-facebook-f"></i></a>
+            <a href="#" class="social-icon-btn"><i class="fab fa-instagram"></i></a>
+            <a href="#" class="social-icon-btn"><i class="fab fa-twitter"></i></a>
+            <a href="#" class="social-icon-btn"><i class="fab fa-whatsapp"></i></a>
+          </div>
+        </div>
+
+        <!-- Quick Links -->
+        <div class="col-lg-2 col-md-4">
+          <h5 class="font-heading text-white mb-3">Navigation</h5>
+          <ul class="list-unstyled">
+            <li><a href="#home" class="footer-link">Home</a></li>
+            <li><a href="#about" class="footer-link">About Us</a></li>
+            <li><a href="#rooms" class="footer-link">Rooms & Suites</a></li>
+            <li><a href="#dining" class="footer-link">Dining</a></li>
+            <li><a href="#spa" class="footer-link">Spa & Wellness</a></li>
+          </ul>
+        </div>
+
+        <!-- Links 2 -->
+        <div class="col-lg-2 col-md-4">
+          <h5 class="font-heading text-white mb-3">Hotel Services</h5>
+          <ul class="list-unstyled">
+            <li><a href="#experiences" class="footer-link">Experiences</a></li>
+            <li><a href="#gallery" class="footer-link">Gallery</a></li>
+            <li><a href="#offers" class="footer-link">Special Offers</a></li>
+            <li><a href="#booking" class="footer-link">Reservation</a></li>
+            <li><a href="javascript:void(0)" onclick="openMyBookingsModal()" class="footer-link">My Bookings</a></li>
+          </ul>
+        </div>
+
+        <!-- Direct Contact Details -->
+        <div class="col-lg-4 col-md-4">
+          <h5 class="font-heading text-white mb-3">Velora Contact Information</h5>
+          <p class="fs-7 text-white mb-2"><i class="fas fa-map-marker-alt text-gold me-2"></i> Islamabad & Rawalpindi, Pakistan</p>
+          <p class="fs-7 text-white mb-2"><i class="fas fa-phone text-gold me-2"></i> Phone: +92 349 1905800</p>
+          <p class="fs-7 text-white mb-2"><i class="fas fa-envelope text-gold me-2"></i> Email: sk80139082@gmail.com</p>
+          <p class="fs-7 text-white mb-0"><i class="fab fa-whatsapp text-gold me-2"></i> WhatsApp: +92 349 1905800</p>
+        </div>
+      </div>
+
+      <div class="border-top border-secondary pt-3 text-center">
+        <p class="fs-8 text-white-50 mb-0">
+          © 2026 Velora Grand Hotel & Spa. All Rights Reserved. Luxury, Serenity & Exceptional Hospitality.
+        </p>
+      </div>
+    </div>
+  </footer>
+
+  <!-- ==========================================================================
+     Floating Controls & Toast Container
+     ========================================================================== -->
+  <div class="floating-controls">
+    <button class="floating-btn" onclick="toggleTheme()" title="Toggle Dark/Light Mode">
+      <i class="fas fa-moon" id="themeIcon"></i>
+    </button>
+    <a href="#home" class="floating-btn d-none" id="backToTopBtn" title="Back To Top">
+      <i class="fas fa-arrow-up"></i>
+    </a>
+  </div>
+
+  <div id="toastContainer" class="toast-container position-fixed bottom-0 start-0 p-3" style="z-index: 2000;"></div>
+
+  <!-- ==========================================================================
+     Modals
+     ========================================================================== -->
+
+  <!-- Room Details Modal -->
+  <div class="modal fade" id="roomDetailsModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header bg-emerald text-white">
+          <h5 class="modal-title font-heading text-gold" id="roomDetailsTitle">Room Details</h5>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body" id="roomDetailsModalBody">
+          <!-- Populated by app.js -->
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Booking Confirmation Modal -->
+  <div class="modal fade" id="confirmationModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header bg-emerald text-white">
+          <h5 class="modal-title font-heading text-gold">Booking Confirmation</h5>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body" id="confirmationModalBody">
+          <!-- Populated by app.js -->
+        </div>
+        <div class="modal-footer">
+          <button class="btn btn-outline-gold btn-sm" onclick="window.print()"><i class="fas fa-print me-1"></i> Print Voucher</button>
+          <button class="btn btn-gold btn-sm" data-bs-dismiss="modal" onclick="openMyBookingsModal()">View In My Bookings</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- My Bookings History Modal -->
+  <div class="modal fade" id="myBookingsModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-xl modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header bg-emerald text-white">
+          <h5 class="modal-title font-heading text-gold"><i class="fas fa-suitcase me-2"></i> My Active & Past Reservations</h5>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body" id="myBookingsModalBody">
+          <!-- Populated by app.js -->
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Gallery Lightbox Modal -->
+  <div class="modal fade" id="lightboxModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+      <div class="modal-content bg-dark border-gold">
+        <div class="modal-header border-0 pb-0">
+          <h5 class="modal-title font-heading text-gold" id="lightboxTitle">Gallery Image</h5>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body text-center p-2">
+          <img src="" id="lightboxImage" class="img-fluid rounded" style="max-height:80vh; object-fit:contain;">
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Add Review Modal -->
+  <div class="modal fade" id="addReviewModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header bg-emerald text-white">
+          <h5 class="modal-title font-heading text-gold">Write a Guest Review</h5>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <form onsubmit="submitReview(event)">
+            <div class="mb-3">
+              <label class="form-label fs-7 fw-bold text-emerald">Your Full Name</label>
+              <input type="text" class="form-control" id="reviewName" required>
+            </div>
+            <div class="mb-3">
+              <label class="form-label fs-7 fw-bold text-emerald">Suite / Room Stayed</label>
+              <input type="text" class="form-control" id="reviewStay" placeholder="e.g. Executive Suite" required>
+            </div>
+            <div class="mb-3">
+              <label class="form-label fs-7 fw-bold text-emerald">Headline / Title</label>
+              <input type="text" class="form-control" id="reviewTitle" required>
+            </div>
+            <div class="mb-3">
+              <label class="form-label fs-7 fw-bold text-emerald">Rating</label>
+              <select class="form-select" id="reviewRating">
+                <option value="5">★★★★★ (5 Stars - Exceptional)</option>
+                <option value="4">★★★★☆ (4 Stars - Excellent)</option>
+              </select>
+            </div>
+            <div class="mb-3">
+              <label class="form-label fs-7 fw-bold text-emerald">Review Experience</label>
+              <textarea class="form-control" id="reviewText" rows="3" required></textarea>
+            </div>
+            <button type="submit" class="btn btn-gold w-100">Submit Guest Review</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Admin Dashboard Modal -->
+  <div class="modal fade admin-modal" id="adminModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-fullscreen">
+      <div class="modal-content">
+        <div class="modal-header bg-dark-emerald text-white border-gold">
+          <div class="d-flex align-items-center gap-3">
+            <h4 class="modal-title font-heading text-gold mb-0"><i class="fas fa-hotel me-2"></i> Velora Hotel Admin Management System</h4>
+            <span class="badge bg-gold text-dark fs-8">Admin Control Panel</span>
+          </div>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body p-0">
+          <div class="container-fluid h-100">
+            <div class="row h-100">
+              <!-- Admin Sidebar -->
+              <div class="col-lg-2 bg-dark-emerald p-3 border-end border-gold">
+                <div class="admin-sidebar">
+                  <div class="admin-nav-item active" onclick="switchAdminTab('overview', this)">
+                    <i class="fas fa-chart-line"></i> Dashboard KPIs
+                  </div>
+                  <div class="admin-nav-item" onclick="switchAdminTab('reservations', this)">
+                    <i class="fas fa-list-alt"></i> Reservations
+                  </div>
+                  <div class="admin-nav-item" onclick="switchAdminTab('rooms', this)">
+                    <i class="fas fa-door-open"></i> Room Inventory
+                  </div>
+                  <div class="admin-nav-item" onclick="switchAdminTab('guests', this)">
+                    <i class="fas fa-users"></i> Guest Directory
+                  </div>
+                  <div class="admin-nav-item" onclick="switchAdminTab('messages', this)">
+                    <i class="fas fa-envelope"></i> Messages
+                  </div>
+                  <div class="admin-nav-item" onclick="switchAdminTab('reports', this)">
+                    <i class="fas fa-file-invoice-dollar"></i> Reports
+                  </div>
+                </div>
+              </div>
+
+              <!-- Admin Main Workspace -->
+              <div class="col-lg-10 p-4" id="adminContentArea">
+                <!-- Rendered dynamically by admin.js -->
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Bootstrap 5.3 JS Bundle -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+  <!-- Velora System Scripts -->
+  <script src="js/data.js"></script>
+  <script src="js/app.js"></script>
+  <script src="js/admin.js"></script>
+</body>
+</html>
