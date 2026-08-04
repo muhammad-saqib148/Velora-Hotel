@@ -12,19 +12,19 @@
 @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap');
 
 :root {
-  --velora-emerald: #123C35;
-  --velora-dark-emerald: #0B2924;
-  --velora-gold: #D6B878;
-  --velora-gold-hover: #c4a35f;
-  --velora-gold-light: rgba(214, 184, 120, 0.15);
-  --velora-ivory: #F8F5ED;
+  --velora-emerald: #0D332A;
+  --velora-dark-emerald: #071C17;
+  --velora-gold: #E5C378;
+  --velora-gold-hover: #D4AF37;
+  --velora-gold-light: rgba(229, 195, 120, 0.18);
+  --velora-ivory: #FAF8F3;
   --velora-white: #FFFFFF;
-  --velora-dark: #24302D;
-  --velora-muted: #647470;
-  --velora-border: #E2DBD0;
-  --velora-shadow-sm: 0 4px 12px rgba(11, 41, 36, 0.05);
-  --velora-shadow-md: 0 10px 30px rgba(11, 41, 36, 0.08);
-  --velora-shadow-lg: 0 20px 40px rgba(11, 41, 36, 0.12);
+  --velora-dark: #182220;
+  --velora-muted: #576B66;
+  --velora-border: #E5DDD0;
+  --velora-shadow-sm: 0 4px 15px rgba(7, 28, 23, 0.06);
+  --velora-shadow-md: 0 12px 32px rgba(7, 28, 23, 0.1);
+  --velora-shadow-lg: 0 22px 48px rgba(7, 28, 23, 0.16);
   --velora-radius: 12px;
 
   --font-heading: 'Cormorant Garamond', Georgia, serif;
@@ -33,14 +33,14 @@
 
 /* Dark Mode Overrides (Sophisticated Dark Theme) */
 [data-theme="dark"] {
-  --velora-ivory: #0B2924;
-  --velora-white: #122622;
-  --velora-dark: #F0EDE6;
-  --velora-muted: #A3B8B0;
-  --velora-border: rgba(214, 184, 120, 0.22);
-  --velora-shadow-sm: 0 4px 15px rgba(0, 0, 0, 0.3);
-  --velora-shadow-md: 0 10px 30px rgba(0, 0, 0, 0.5);
-  --velora-shadow-lg: 0 20px 45px rgba(0, 0, 0, 0.7);
+  --velora-ivory: #071C17;
+  --velora-white: #0D2A23;
+  --velora-dark: #F7F5F0;
+  --velora-muted: #A8BFB9;
+  --velora-border: rgba(229, 195, 120, 0.3);
+  --velora-shadow-sm: 0 4px 18px rgba(0, 0, 0, 0.35);
+  --velora-shadow-md: 0 12px 35px rgba(0, 0, 0, 0.55);
+  --velora-shadow-lg: 0 24px 50px rgba(0, 0, 0, 0.75);
 }
 
 /* Base Styles */
@@ -84,23 +84,23 @@ h1, h2, h3, h4, h5, h6, .font-heading {
 }
 
 [data-theme="dark"] .bg-white {
-  background-color: #123C35 !important;
+  background-color: #0D2A23 !important;
   color: #FFFFFF !important;
 }
 
 [data-theme="dark"] .bg-ivory {
-  background-color: #0E312B !important;
+  background-color: #0A211B !important;
   color: #FFFFFF !important;
 }
 
 [data-theme="dark"] .text-muted {
-  color: #C0D2CC !important;
+  color: #C2D5CF !important;
 }
 
 [data-theme="dark"] .card {
-  background-color: #123C35 !important;
+  background-color: #0D2A23 !important;
   color: #FFFFFF !important;
-  border-color: rgba(214, 184, 120, 0.25) !important;
+  border-color: rgba(229, 195, 120, 0.3) !important;
 }
 
 .text-gold {

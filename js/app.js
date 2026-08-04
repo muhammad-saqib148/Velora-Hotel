@@ -2,7 +2,7 @@
  * Velora Grand Hotel & Spa - Main Frontend Logic
  */
 
-document.addEventListener("DOMContentLoaded", function () {
+function initApp() {
   // Initialize Theme
   initTheme();
 
@@ -26,7 +26,13 @@ document.addEventListener("DOMContentLoaded", function () {
 
   // Initialize Event Listeners
   initEventListeners();
-});
+}
+
+if (document.readyState === "loading") {
+  document.addEventListener("DOMContentLoaded", initApp);
+} else {
+  initApp();
+}
 
 /* ==========================================================================
    Theme & Utility Functions
@@ -37,16 +43,16 @@ window.handleImgError = function (img, title) {
   const count = parseInt(img.dataset.errCount || "0", 10);
   img.dataset.errCount = (count + 1).toString();
 
-  const cleanTitle = (title || 'Velora Luxury').replace(/'/g, "");
+  const cleanTitle = (title || 'Velora Luxury').replace(/['"]/g, "");
 
   if (count === 0) {
     const seed = encodeURIComponent(cleanTitle.toLowerCase().replace(/[^a-z0-9]/g, "-"));
     img.src = `https://picsum.photos/seed/${seed}/800/600`;
   } else {
     img.onerror = null;
-    const svgTitle = encodeURIComponent(cleanTitle);
-    const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="800" height="600" viewBox="0 0 800 600"><defs><linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="%230B2924"/><stop offset="100%" stop-color="%23123C35"/></linearGradient></defs><rect width="800" height="600" fill="url(%23bg)"/><rect x="30" y="30" width="740" height="540" fill="none" stroke="%23D6B878" stroke-width="2" stroke-dasharray="6,6"/><circle cx="400" cy="230" r="60" fill="%230B2924" stroke="%23D6B878" stroke-width="2"/><path d="M370 245 L400 210 L430 245 Z" fill="%23D6B878"/><path d="M380 255 H420 V265 H380 Z" fill="%23D6B878"/><text x="400" y="340" font-family="Georgia, serif" font-size="26" fill="%23D6B878" text-anchor="middle" font-weight="bold">${svgTitle}</text><text x="400" y="380" font-family="sans-serif" font-size="16" fill="%23C0D2CC" text-anchor="middle">Velora Grand Hotel %26 Spa</text></svg>`;
-    img.src = `data:image/svg+xml;utf8,${svg}`;
+    const safeSvgTitle = cleanTitle.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+    const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="800" height="600" viewBox="0 0 800 600"><defs><linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="%230F3831"/><stop offset="100%" stop-color="%23081F1B"/></linearGradient></defs><rect width="800" height="600" fill="url(%23bg)"/><rect x="30" y="30" width="740" height="540" fill="none" stroke="%23E2BF7D" stroke-width="2" stroke-dasharray="6,6"/><circle cx="400" cy="230" r="60" fill="%23081F1B" stroke="%23E2BF7D" stroke-width="2"/><path d="M370 245 L400 210 L430 245 Z" fill="%23E2BF7D"/><path d="M380 255 H420 V265 H380 Z" fill="%23E2BF7D"/><text x="400" y="340" font-family="Georgia, serif" font-size="26" fill="%23E2BF7D" text-anchor="middle" font-weight="bold">${safeSvgTitle}</text><text x="400" y="380" font-family="sans-serif" font-size="16" fill="%23A1B8B1" text-anchor="middle">Velora Grand Hotel &amp; Spa</text></svg>`;
+    img.src = `data:image/svg+xml;charset=utf-8,${encodeURIComponent(svg)}`;
   }
 };
 
