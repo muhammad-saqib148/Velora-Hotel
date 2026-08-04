@@ -306,14 +306,20 @@ const VELORA_DATA = {
   ],
 
   gallery: [
-    { title: "Grand Hotel Exterior at Sunset", category: "exterior", image: "https://images.unsplash.com/photo-1566073771259-6a8506099945?auto=format&fit=crop&w=1200&q=80" },
-    { title: "Crystal Chandelier Hotel Lobby", category: "lobby", image: "https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?auto=format&fit=crop&w=1200&q=80" },
-    { title: "Executive King Suite Bedroom", category: "rooms", image: "https://images.unsplash.com/photo-1618773928121-c32242e63f39?auto=format&fit=crop&w=1200&q=80" },
-    { title: "Presidential Lounge & Terrace", category: "suites", image: "https://images.unsplash.com/photo-1590490360182-c33d57733427?auto=format&fit=crop&w=1200&q=80" },
+    { title: "Grand Hotel Facade at Sunset", category: "exterior", image: "https://images.unsplash.com/photo-1566073771259-6a8506099945?auto=format&fit=crop&w=1200&q=80" },
+    { title: "Crystal Chandelier Grand Foyer", category: "lobby", image: "https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?auto=format&fit=crop&w=1200&q=80" },
+    { title: "Deluxe King Master Bedroom", category: "rooms", image: "https://images.unsplash.com/photo-1618773928121-c32242e63f39?auto=format&fit=crop&w=1200&q=80" },
+    { title: "Executive Suite Living Lounge", category: "suites", image: "https://images.unsplash.com/photo-1591088398332-8a7791972843?auto=format&fit=crop&w=1200&q=80" },
+    { title: "Presidential Skyline Suite & Terrace", category: "suites", image: "https://images.unsplash.com/photo-1590490360182-c33d57733427?auto=format&fit=crop&w=1200&q=80" },
+    { title: "Royal Penthouse Bedroom & Canopy", category: "suites", image: "https://images.unsplash.com/photo-1631049307264-da0ec9d70304?auto=format&fit=crop&w=1200&q=80" },
     { title: "Heated Infinity Swimming Pool", category: "pool", image: "https://images.unsplash.com/photo-1571896349842-33c89424de2d?auto=format&fit=crop&w=1200&q=80" },
-    { title: "Verde Signature Fine Dining", category: "restaurant", image: "https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?auto=format&fit=crop&w=1200&q=80" },
-    { title: "Luxury Thermal Spa Suite", category: "spa", image: "https://images.unsplash.com/photo-1540555700478-4be289fbecef?auto=format&fit=crop&w=1200&q=80" },
-    { title: "Sunset Rooftop Lounge Bar", category: "rooftop", image: "https://images.unsplash.com/photo-1533105079780-92b9be482077?auto=format&fit=crop&w=1200&q=80" },
+    { title: "Tropical Pool Cabanas & Sunbeds", category: "pool", image: "https://images.unsplash.com/photo-1540555700478-4be289fbecef?auto=format&fit=crop&w=1200&q=80" },
+    { title: "Verde Fine Dining Restaurant", category: "restaurant", image: "https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?auto=format&fit=crop&w=1200&q=80" },
+    { title: "Michelin-Inspired Gastronomy Plating", category: "restaurant", image: "https://images.unsplash.com/photo-1544025162-d76694265947?auto=format&fit=crop&w=1200&q=80" },
+    { title: "Sunset Rooftop Lounge & Cocktail Bar", category: "rooftop", image: "https://images.unsplash.com/photo-1533105079780-92b9be482077?auto=format&fit=crop&w=1200&q=80" },
+    { title: "Luxury Thermal Spa Hydrotherapy Suite", category: "spa", image: "https://images.unsplash.com/photo-1544161515-4ab6ce6db874?auto=format&fit=crop&w=1200&q=80" },
+    { title: "Aromatherapy Treatment Sanctum", category: "spa", image: "https://images.unsplash.com/photo-1600334089648-b0d9d3028eb2?auto=format&fit=crop&w=1200&q=80" },
+    { title: "Botanical Water Gardens & Fountains", category: "exterior", image: "https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?auto=format&fit=crop&w=1200&q=80" },
     { title: "Royal Ballroom Grand Gala Setup", category: "events", image: "https://images.unsplash.com/photo-1511795409834-ef04bbd61622?auto=format&fit=crop&w=1200&q=80" }
   ],
 

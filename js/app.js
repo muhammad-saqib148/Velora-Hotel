@@ -112,11 +112,102 @@ function initNavbar() {
    Rooms & Suites Rendering
    ========================================================================== */
 
+const FALLBACK_ROOMS_DATA = [
+  {
+    id: "deluxe-king",
+    title: "Deluxe King Room",
+    category: "rooms",
+    price: 280,
+    size: "48 m² / 516 sq.ft",
+    guests: "2 Adults, 1 Child",
+    bed: "1 King Bed",
+    rating: 4.9,
+    badge: "Popular",
+    image: "https://images.unsplash.com/photo-1618773928121-c32242e63f39?auto=format&fit=crop&w=1200&q=80",
+    description: "Designed for discerning travelers, the Deluxe King Room blends contemporary European luxury with classical warmth.",
+    amenities: ["Free High-Speed Wi-Fi", "55-inch OLED Smart TV", "Nespresso Coffee Machine", "Italian Marble Bathroom"]
+  },
+  {
+    id: "executive-suite",
+    title: "Executive Suite",
+    category: "suites",
+    price: 450,
+    size: "72 m² / 775 sq.ft",
+    guests: "3 Adults",
+    bed: "1 Super King Bed",
+    rating: 5.0,
+    badge: "Best Seller",
+    image: "https://images.unsplash.com/photo-1591088398332-8a7791972843?auto=format&fit=crop&w=1200&q=80",
+    description: "Spacious luxury featuring a separate elegant living lounge, dedicated workspace, and an opulent master bedroom.",
+    amenities: ["Executive Lounge Access", "Gourmet Breakfast", "Deep Jacuzzi Bathtub", "Walk-in Closet"]
+  },
+  {
+    id: "velora-garden-suite",
+    title: "Velora Garden Suite",
+    category: "suites",
+    price: 520,
+    size: "85 m² / 915 sq.ft",
+    guests: "2 Adults, 2 Children",
+    bed: "1 King Bed + Convertible Sofa",
+    rating: 4.95,
+    badge: "Serenity Choice",
+    image: "https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?auto=format&fit=crop&w=1200&q=80",
+    description: "A sanctuary of peace featuring direct access to Velora's private botanical gardens and private sun terrace.",
+    amenities: ["Private Sun Terrace", "Outdoor Rain Shower", "Daily Thermal Spa Pass", "In-suite Breakfast"]
+  },
+  {
+    id: "family-residence",
+    title: "Family Residence",
+    category: "residences",
+    price: 680,
+    size: "110 m² / 1,184 sq.ft",
+    guests: "4 Adults, 2 Children",
+    bed: "1 Emperor King + 2 Twin Beds",
+    rating: 4.9,
+    badge: "Family Favorite",
+    image: "https://images.unsplash.com/photo-1566665797739-1674de7a421a?auto=format&fit=crop&w=1200&q=80",
+    description: "Designed for family luxury with two interconnected master bedrooms, fully equipped kitchenette, and formal dining.",
+    amenities: ["Two En-suite Bathrooms", "Gourmet Kitchenette", "PlayStation 5 Console", "Family Concierge"]
+  },
+  {
+    id: "presidential-suite",
+    title: "Presidential Suite",
+    category: "suites",
+    price: 1200,
+    size: "160 m² / 1,722 sq.ft",
+    guests: "4 Guests",
+    bed: "1 Emperor King Bed",
+    rating: 5.0,
+    badge: "Exclusive",
+    image: "https://images.unsplash.com/photo-1590490360182-c33d57733427?auto=format&fit=crop&w=1200&q=80",
+    description: "The pinnacle of architectural grandeur with private entrance, grand piano, formal dining, steam room, and butler service.",
+    amenities: ["24/7 Private Butler", "Chauffeur Airport Transfer", "In-suite Steam Room & Sauna", "Steinway Piano"]
+  },
+  {
+    id: "royal-grand-suite",
+    title: "Royal Grand Suite",
+    category: "suites",
+    price: 1800,
+    size: "240 m² / 2,583 sq.ft",
+    guests: "6 Guests",
+    bed: "2 Emperor King Beds",
+    rating: 5.0,
+    badge: "Crown Jewel",
+    image: "https://images.unsplash.com/photo-1631049307264-da0ec9d70304?auto=format&fit=crop&w=1200&q=80",
+    description: "Our crown jewel residence with private heated rooftop plunge pool, security entrance, terrace, and private spa room.",
+    amenities: ["Private Rooftop Plunge Pool", "Top Floor Security Suite", "Private Spa Treatment Room", "Helipad Access"]
+  }
+];
+
 function renderRooms(filterCategory = "all") {
   const container = document.getElementById("roomsContainer");
-  if (!container || (!window.VELORA_DATA && !window.VELORA_ROOMS)) return;
+  if (!container) return;
 
-  const roomsList = (window.VELORA_ROOMS && window.VELORA_ROOMS.length > 0) ? window.VELORA_ROOMS : (window.VELORA_DATA ? window.VELORA_DATA.rooms : []);
+  let roomsList = (window.VELORA_ROOMS && window.VELORA_ROOMS.length > 0)
+    ? window.VELORA_ROOMS
+    : ((window.VELORA_DATA && window.VELORA_DATA.rooms && window.VELORA_DATA.rooms.length > 0)
+      ? window.VELORA_DATA.rooms
+      : FALLBACK_ROOMS_DATA);
 
   const rooms = roomsList.filter(room => {
     if (filterCategory === "all") return true;
@@ -131,24 +222,27 @@ function renderRooms(filterCategory = "all") {
     return;
   }
 
-  container.innerHTML = rooms.map(room => `
+  container.innerHTML = rooms.map(room => {
+    const safeTitle = (room.title || room.name || 'Luxury Room').replace(/'/g, "\\'");
+    const safeImage = room.image || 'https://images.unsplash.com/photo-1618773928121-c32242e63f39?auto=format&fit=crop&w=1200&q=80';
+    return `
     <div class="col-lg-4 col-md-6 mb-4">
       <div class="room-card">
         <div class="room-img-wrapper">
-          <img src="${room.image}" alt="${room.title}" class="room-img" loading="lazy" referrerpolicy="no-referrer" onerror="this.onerror=null; this.src='https://picsum.photos/seed/${room.id}/800/600';">
+          <img src="${safeImage}" alt="${safeTitle}" class="room-img" loading="lazy" referrerpolicy="no-referrer" onerror="this.onerror=null; this.src='https://images.unsplash.com/photo-1618773928121-c32242e63f39?auto=format&fit=crop&w=1200&q=80';">
           <span class="room-badge">${room.badge || 'Luxury'}</span>
           <div class="room-price-tag">
             <span class="room-price-amount">$${room.price}</span> <small class="text-white-50">/ night</small>
           </div>
         </div>
         <div class="room-content">
-          <h3 class="room-title text-emerald">${room.title}</h3>
+          <h3 class="room-title text-emerald">${room.title || room.name}</h3>
           <div class="room-specs">
-            <span><i class="fas fa-vector-square"></i> ${room.size}</span>
-            <span><i class="fas fa-users"></i> ${room.guests}</span>
-            <span><i class="fas fa-bed"></i> ${room.bed}</span>
+            <span><i class="fas fa-vector-square"></i> ${room.size || '50 m²'}</span>
+            <span><i class="fas fa-users"></i> ${room.guests || '2 Guests'}</span>
+            <span><i class="fas fa-bed"></i> ${room.bed || '1 King Bed'}</span>
           </div>
-          <p class="room-desc">${room.description}</p>
+          <p class="room-desc">${room.description || ''}</p>
           <div class="room-amenities-pills">
             ${(room.amenities || []).slice(0, 4).map(a => `<span class="amenity-pill"><i class="fas fa-check text-gold me-1"></i>${a}</span>`).join('')}
             ${(room.amenities || []).length > 4 ? `<span class="amenity-pill">+${room.amenities.length - 4} more</span>` : ''}
@@ -160,7 +254,7 @@ function renderRooms(filterCategory = "all") {
         </div>
       </div>
     </div>
-  `).join('');
+  `}).join('');
 }
 
 function filterRooms(category, btnElement) {
@@ -517,23 +611,53 @@ function applyPromoCode(code) {
   document.getElementById("booking")?.scrollIntoView({ behavior: "smooth" });
 }
 
+const FALLBACK_GALLERY_DATA = [
+  { title: "Grand Hotel Facade at Sunset", category: "exterior", image: "https://images.unsplash.com/photo-1566073771259-6a8506099945?auto=format&fit=crop&w=1200&q=80" },
+  { title: "Crystal Chandelier Grand Foyer", category: "lobby", image: "https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?auto=format&fit=crop&w=1200&q=80" },
+  { title: "Deluxe King Master Bedroom", category: "rooms", image: "https://images.unsplash.com/photo-1618773928121-c32242e63f39?auto=format&fit=crop&w=1200&q=80" },
+  { title: "Executive Suite Living Lounge", category: "suites", image: "https://images.unsplash.com/photo-1591088398332-8a7791972843?auto=format&fit=crop&w=1200&q=80" },
+  { title: "Presidential Skyline Suite & Terrace", category: "suites", image: "https://images.unsplash.com/photo-1590490360182-c33d57733427?auto=format&fit=crop&w=1200&q=80" },
+  { title: "Royal Penthouse Bedroom & Canopy", category: "suites", image: "https://images.unsplash.com/photo-1631049307264-da0ec9d70304?auto=format&fit=crop&w=1200&q=80" },
+  { title: "Heated Infinity Swimming Pool", category: "pool", image: "https://images.unsplash.com/photo-1571896349842-33c89424de2d?auto=format&fit=crop&w=1200&q=80" },
+  { title: "Tropical Pool Cabanas & Sunbeds", category: "pool", image: "https://images.unsplash.com/photo-1540555700478-4be289fbecef?auto=format&fit=crop&w=1200&q=80" },
+  { title: "Verde Fine Dining Restaurant", category: "restaurant", image: "https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?auto=format&fit=crop&w=1200&q=80" },
+  { title: "Michelin-Inspired Gastronomy Plating", category: "restaurant", image: "https://images.unsplash.com/photo-1544025162-d76694265947?auto=format&fit=crop&w=1200&q=80" },
+  { title: "Sunset Rooftop Lounge & Cocktail Bar", category: "rooftop", image: "https://images.unsplash.com/photo-1533105079780-92b9be482077?auto=format&fit=crop&w=1200&q=80" },
+  { title: "Luxury Thermal Spa Hydrotherapy Suite", category: "spa", image: "https://images.unsplash.com/photo-1544161515-4ab6ce6db874?auto=format&fit=crop&w=1200&q=80" },
+  { title: "Aromatherapy Treatment Sanctum", category: "spa", image: "https://images.unsplash.com/photo-1600334089648-b0d9d3028eb2?auto=format&fit=crop&w=1200&q=80" },
+  { title: "Botanical Water Gardens & Fountains", category: "exterior", image: "https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?auto=format&fit=crop&w=1200&q=80" },
+  { title: "Royal Ballroom Grand Gala Setup", category: "events", image: "https://images.unsplash.com/photo-1511795409834-ef04bbd61622?auto=format&fit=crop&w=1200&q=80" }
+];
+
 function renderGallery(filterCategory = "all") {
   const container = document.getElementById("galleryContainer");
-  if (!container || !window.VELORA_DATA) return;
+  if (!container) return;
 
-  const items = window.VELORA_DATA.gallery.filter(item => {
+  const galleryList = (window.VELORA_DATA && window.VELORA_DATA.gallery && window.VELORA_DATA.gallery.length > 0)
+    ? window.VELORA_DATA.gallery
+    : FALLBACK_GALLERY_DATA;
+
+  const items = galleryList.filter(item => {
     if (filterCategory === "all") return true;
     if (filterCategory === "rooms") return item.category === "rooms" || item.category === "suites";
-    if (filterCategory === "dining") return item.category === "restaurant" || item.category === "rooftop";
-    if (filterCategory === "grounds") return item.category === "pool" || item.category === "exterior" || item.category === "lobby" || item.category === "events";
+    if (filterCategory === "dining") return item.category === "restaurant" || item.category === "rooftop" || item.category === "dining";
+    if (filterCategory === "grounds") return item.category === "pool" || item.category === "exterior" || item.category === "lobby" || item.category === "events" || item.category === "grounds";
     if (filterCategory === "spa") return item.category === "spa";
     return item.category === filterCategory;
   });
 
-  container.innerHTML = items.map(item => `
+  if (items.length === 0) {
+    container.innerHTML = `<div class="col-12 text-center py-5"><p class="text-white-50 fs-5">No gallery items found for this category.</p></div>`;
+    return;
+  }
+
+  container.innerHTML = items.map(item => {
+    const safeTitle = (item.title || 'Resort Photo').replace(/'/g, "\\'");
+    const safeImage = item.image || 'https://images.unsplash.com/photo-1566073771259-6a8506099945?auto=format&fit=crop&w=1200&q=80';
+    return `
     <div class="col-lg-4 col-md-6 mb-4">
-      <div class="gallery-item" onclick="openLightbox('${item.image}', '${item.title}')">
-        <img src="${item.image}" alt="${item.title}" class="gallery-img" loading="lazy" referrerpolicy="no-referrer" onerror="this.onerror=null; this.src='https://picsum.photos/seed/${encodeURIComponent(item.title)}/800/600';">
+      <div class="gallery-item" onclick="openLightbox('${safeImage}', '${safeTitle}')">
+        <img src="${safeImage}" alt="${safeTitle}" class="gallery-img" loading="lazy" referrerpolicy="no-referrer" onerror="this.onerror=null; this.src='https://images.unsplash.com/photo-1566073771259-6a8506099945?auto=format&fit=crop&w=1200&q=80';">
         <div class="gallery-overlay">
           <div class="gallery-icon"><i class="fas fa-search-plus"></i></div>
           <h5 class="font-heading mb-0 text-white">${item.title}</h5>
@@ -541,7 +665,7 @@ function renderGallery(filterCategory = "all") {
         </div>
       </div>
     </div>
-  `).join('');
+  `}).join('');
 }
 
 function filterGallery(category, btnEl) {
