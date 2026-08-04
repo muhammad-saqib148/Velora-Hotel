@@ -114,25 +114,35 @@ function initNavbar() {
 
 function renderRooms(filterCategory = "all") {
   const container = document.getElementById("roomsContainer");
-  if (!container || !window.VELORA_DATA) return;
+  if (!container || (!window.VELORA_DATA && !window.VELORA_ROOMS)) return;
 
-  const rooms = window.VELORA_DATA.rooms.filter(room => {
+  const roomsList = (window.VELORA_ROOMS && window.VELORA_ROOMS.length > 0) ? window.VELORA_ROOMS : (window.VELORA_DATA ? window.VELORA_DATA.rooms : []);
+
+  const rooms = roomsList.filter(room => {
     if (filterCategory === "all") return true;
+    if (filterCategory === "rooms") return room.category === "rooms";
+    if (filterCategory === "suites") return room.category === "suites" || room.category === "residences";
+    if (filterCategory === "presidential") return room.category === "presidential" || room.category === "royal" || room.id.includes("presidential") || room.id.includes("royal");
     return room.category === filterCategory;
   });
+
+  if (rooms.length === 0) {
+    container.innerHTML = `<div class="col-12 text-center py-5"><p class="text-white-50 fs-5">No accommodations found for this category.</p></div>`;
+    return;
+  }
 
   container.innerHTML = rooms.map(room => `
     <div class="col-lg-4 col-md-6 mb-4">
       <div class="room-card">
         <div class="room-img-wrapper">
-          <img src="${room.image}" alt="${room.title}" class="room-img" loading="lazy" onerror="this.src='https://picsum.photos/seed/${room.id}/800/600'">
-          <span class="room-badge">${room.badge}</span>
+          <img src="${room.image}" alt="${room.title}" class="room-img" loading="lazy" referrerpolicy="no-referrer" onerror="this.onerror=null; this.src='https://picsum.photos/seed/${room.id}/800/600';">
+          <span class="room-badge">${room.badge || 'Luxury'}</span>
           <div class="room-price-tag">
             <span class="room-price-amount">$${room.price}</span> <small class="text-white-50">/ night</small>
           </div>
         </div>
         <div class="room-content">
-          <h3 class="room-title">${room.title}</h3>
+          <h3 class="room-title text-emerald">${room.title}</h3>
           <div class="room-specs">
             <span><i class="fas fa-vector-square"></i> ${room.size}</span>
             <span><i class="fas fa-users"></i> ${room.guests}</span>
@@ -140,12 +150,12 @@ function renderRooms(filterCategory = "all") {
           </div>
           <p class="room-desc">${room.description}</p>
           <div class="room-amenities-pills">
-            ${room.amenities.slice(0, 4).map(a => `<span class="amenity-pill"><i class="fas fa-check text-gold me-1"></i>${a}</span>`).join('')}
-            ${room.amenities.length > 4 ? `<span class="amenity-pill">+${room.amenities.length - 4} more</span>` : ''}
+            ${(room.amenities || []).slice(0, 4).map(a => `<span class="amenity-pill"><i class="fas fa-check text-gold me-1"></i>${a}</span>`).join('')}
+            ${(room.amenities || []).length > 4 ? `<span class="amenity-pill">+${room.amenities.length - 4} more</span>` : ''}
           </div>
-          <div class="room-actions">
-            <button class="btn btn-outline-gold w-50 btn-sm" onclick="openRoomDetails('${room.id}')">View Details</button>
-            <button class="btn btn-gold w-50 btn-sm" onclick="selectRoomForBooking('${room.id}')">Reserve Stay</button>
+          <div class="room-actions mt-3">
+            <button class="btn btn-outline-gold w-50 btn-sm" onclick="openRoomDetails('${room.id}')"><i class="fas fa-info-circle me-1"></i> Details</button>
+            <button class="btn btn-gold w-50 btn-sm" onclick="selectRoomForBooking('${room.id}')"><i class="fas fa-calendar-check me-1"></i> Reserve</button>
           </div>
         </div>
       </div>
@@ -183,12 +193,21 @@ function initRoomDetailsPage() {
   const container = document.getElementById("roomDetailsPageContainer");
   if (!container) return;
 
-  const roomsList = window.VELORA_ROOMS || (window.VELORA_DATA ? window.VELORA_DATA.rooms : []);
+  const roomsList = (window.VELORA_ROOMS && window.VELORA_ROOMS.length > 0) ? window.VELORA_ROOMS : (window.VELORA_DATA ? window.VELORA_DATA.rooms : []);
   const params = new URLSearchParams(window.location.search);
   const roomId = params.get("id") || "deluxe-king";
   const room = roomsList.find(r => r.id === roomId) || roomsList[0];
 
-  if (!room) return;
+  if (!room) {
+    container.innerHTML = `
+      <div class="text-center py-5">
+        <h3 class="text-gold">Suite Specifications Not Found</h3>
+        <p class="text-white-50">The requested room details could not be loaded.</p>
+        <a href="rooms.html" class="btn btn-gold mt-3"><i class="fas fa-arrow-left me-2"></i> Browse All Accommodations</a>
+      </div>
+    `;
+    return;
+  }
 
   // Set document title
   document.title = `${room.title} | Velora Grand Hotel & Spa`;
@@ -202,18 +221,18 @@ function initRoomDetailsPage() {
       <div class="col-lg-8">
         <!-- Main Image -->
         <div class="position-relative overflow-hidden rounded shadow-sm mb-3">
-          <img id="mainRoomImage" src="${room.image}" alt="${room.title}" class="w-100 object-fit-cover" style="height: 480px;">
+          <img id="mainRoomImage" src="${room.image}" alt="${room.title}" class="w-100 object-fit-cover rounded border border-gold" style="height: 480px;" referrerpolicy="no-referrer" onerror="this.onerror=null; this.src='https://picsum.photos/seed/${room.id}/1200/800';">
           <span class="room-badge" style="top:20px; right:20px;">${room.badge || 'Luxury'}</span>
         </div>
 
         <!-- Thumbnails Gallery -->
         <div class="row g-2 mb-4">
           <div class="col-4 col-md-3">
-            <img src="${room.image}" onclick="document.getElementById('mainRoomImage').src='${room.image}'" class="img-fluid rounded border border-gold cursor-pointer" style="height:90px; width:100%; object-fit:cover;">
+            <img src="${room.image}" onclick="document.getElementById('mainRoomImage').src='${room.image}'" class="img-fluid rounded border border-gold cursor-pointer" style="height:90px; width:100%; object-fit:cover;" referrerpolicy="no-referrer" onerror="this.onerror=null; this.src='https://picsum.photos/seed/${room.id}/400/300';">
           </div>
-          ${(room.gallery || []).map(img => `
+          ${(room.gallery || []).map((img, i) => `
             <div class="col-4 col-md-3">
-              <img src="${img}" onclick="document.getElementById('mainRoomImage').src='${img}'" class="img-fluid rounded border cursor-pointer hover-gold" style="height:90px; width:100%; object-fit:cover;" onerror="this.src='https://picsum.photos/seed/rm/300/200'">
+              <img src="${img}" onclick="document.getElementById('mainRoomImage').src='${img}'" class="img-fluid rounded border cursor-pointer hover-gold" style="height:90px; width:100%; object-fit:cover;" referrerpolicy="no-referrer" onerror="this.onerror=null; this.src='https://picsum.photos/seed/${room.id}-${i}/400/300';">
             </div>
           `).join('')}
         </div>
@@ -504,13 +523,17 @@ function renderGallery(filterCategory = "all") {
 
   const items = window.VELORA_DATA.gallery.filter(item => {
     if (filterCategory === "all") return true;
+    if (filterCategory === "rooms") return item.category === "rooms" || item.category === "suites";
+    if (filterCategory === "dining") return item.category === "restaurant" || item.category === "rooftop";
+    if (filterCategory === "grounds") return item.category === "pool" || item.category === "exterior" || item.category === "lobby" || item.category === "events";
+    if (filterCategory === "spa") return item.category === "spa";
     return item.category === filterCategory;
   });
 
   container.innerHTML = items.map(item => `
     <div class="col-lg-4 col-md-6 mb-4">
       <div class="gallery-item" onclick="openLightbox('${item.image}', '${item.title}')">
-        <img src="${item.image}" alt="${item.title}" class="gallery-img" loading="lazy" onerror="this.src='https://picsum.photos/seed/gal/800/600'">
+        <img src="${item.image}" alt="${item.title}" class="gallery-img" loading="lazy" referrerpolicy="no-referrer" onerror="this.onerror=null; this.src='https://picsum.photos/seed/${encodeURIComponent(item.title)}/800/600';">
         <div class="gallery-overlay">
           <div class="gallery-icon"><i class="fas fa-search-plus"></i></div>
           <h5 class="font-heading mb-0 text-white">${item.title}</h5>

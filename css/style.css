@@ -1044,15 +1044,16 @@ h1, h2, h3, h4, h5, h6, .font-heading {
   border-bottom: 1px solid var(--velora-border);
 }
 
-/* Footer - WHITE Text Requirement */
-.velora-footer {
+/* Footer Styling & Link Colors */
+.velora-footer, .footer-section {
   background-color: var(--velora-dark-emerald);
   color: #FFFFFF !important;
   padding: 4.5rem 0 2rem 0;
   border-top: 3px solid var(--velora-gold);
 }
 
-.velora-footer h4, .velora-footer h5, .velora-footer p, .velora-footer li, .velora-footer a {
+.velora-footer h4, .velora-footer h5, .velora-footer p, .velora-footer li,
+.footer-section h4, .footer-section h5, .footer-section p, .footer-section li {
   color: #FFFFFF !important;
 }
 
@@ -1064,24 +1065,28 @@ h1, h2, h3, h4, h5, h6, .font-heading {
   color: var(--velora-gold) !important;
 }
 
-.footer-link {
+.footer-link, .velora-footer a.footer-link, .footer-section a.footer-link {
+  color: var(--velora-gold) !important;
   text-decoration: none;
-  transition: color 0.3s ease;
+  font-weight: 500;
+  font-size: 0.95rem;
+  transition: all 0.3s ease;
   display: inline-block;
   margin-bottom: 0.5rem;
 }
 
-.footer-link:hover {
-  color: var(--velora-gold) !important;
-  padding-left: 5px;
+.footer-link:hover, .velora-footer a.footer-link:hover, .footer-section a.footer-link:hover {
+  color: #FFFFFF !important;
+  padding-left: 6px;
+  text-shadow: 0 0 10px rgba(214, 184, 120, 0.6);
 }
 
 .social-icon-btn {
   width: 40px;
   height: 40px;
   border-radius: 50%;
-  border: 1px solid rgba(255, 255, 255, 0.3);
-  color: #FFFFFF !important;
+  border: 1px solid var(--velora-gold);
+  color: var(--velora-gold) !important;
   display: inline-flex;
   align-items: center;
   justify-content: center;
