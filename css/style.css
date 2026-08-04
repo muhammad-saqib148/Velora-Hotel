@@ -75,6 +75,34 @@ h1, h2, h3, h4, h5, h6, .font-heading {
   color: #FFFFFF;
 }
 
+.text-emerald {
+  color: var(--velora-emerald) !important;
+}
+
+[data-theme="dark"] .text-emerald {
+  color: #FFFFFF !important;
+}
+
+[data-theme="dark"] .bg-white {
+  background-color: #123C35 !important;
+  color: #FFFFFF !important;
+}
+
+[data-theme="dark"] .bg-ivory {
+  background-color: #0E312B !important;
+  color: #FFFFFF !important;
+}
+
+[data-theme="dark"] .text-muted {
+  color: #C0D2CC !important;
+}
+
+[data-theme="dark"] .card {
+  background-color: #123C35 !important;
+  color: #FFFFFF !important;
+  border-color: rgba(214, 184, 120, 0.25) !important;
+}
+
 .text-gold {
   color: var(--velora-gold) !important;
 }
