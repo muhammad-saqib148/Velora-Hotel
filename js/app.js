@@ -9,7 +9,7 @@ document.addEventListener("DOMContentLoaded", function () {
   // Initialize Navbar
   initNavbar();
 
-  // Render Core Sections
+  // Render Core Sections if containers exist
   renderRooms();
   renderExperiences();
   renderDiningMenu('breakfast');
@@ -19,8 +19,10 @@ document.addEventListener("DOMContentLoaded", function () {
   renderReviews();
   renderFaqs();
 
-  // Initialize Booking System
+  // Initialize Page Specific Logic
+  initRoomDetailsPage();
   initBookingSystem();
+  initMyBookingsPage();
 
   // Initialize Event Listeners
   initEventListeners();
@@ -158,56 +160,211 @@ function filterRooms(category, btnElement) {
 }
 
 function openRoomDetails(roomId) {
-  const room = window.VELORA_DATA.rooms.find(r => r.id === roomId);
+  // Always navigate to real room-details.html page as per multi-page architecture
+  window.location.href = `room-details.html?id=${encodeURIComponent(roomId)}`;
+}
+
+function selectRoomForBooking(roomId) {
+  const roomSelect = document.getElementById("bookRoomSelect");
+  if (roomSelect) {
+    roomSelect.value = roomId;
+    calculateBookingTotal();
+    document.getElementById("booking")?.scrollIntoView({ behavior: "smooth" });
+  } else {
+    window.location.href = `booking.html?room=${encodeURIComponent(roomId)}`;
+  }
+}
+
+/* ==========================================================================
+   Room Details Page Dynamic Renderer
+   ========================================================================== */
+
+function initRoomDetailsPage() {
+  const container = document.getElementById("roomDetailsPageContainer");
+  if (!container) return;
+
+  const roomsList = window.VELORA_ROOMS || (window.VELORA_DATA ? window.VELORA_DATA.rooms : []);
+  const params = new URLSearchParams(window.location.search);
+  const roomId = params.get("id") || "deluxe-king";
+  const room = roomsList.find(r => r.id === roomId) || roomsList[0];
+
   if (!room) return;
 
-  const modalBody = document.getElementById("roomDetailsModalBody");
-  if (!modalBody) return;
+  // Set document title
+  document.title = `${room.title} | Velora Grand Hotel & Spa`;
 
-  modalBody.innerHTML = `
-    <div class="row g-4">
-      <div class="col-lg-6">
-        <img src="${room.image}" alt="${room.title}" class="img-fluid rounded mb-3 shadow-sm w-100" style="max-height:350px; object-fit:cover;">
-        <div class="row g-2">
-          ${room.gallery.map(img => `
-            <div class="col-4">
-              <img src="${img}" class="img-fluid rounded shadow-sm" style="height:80px; width:100%; object-fit:cover;" onerror="this.src='https://picsum.photos/seed/room/300/200'">
+  const today = new Date().toISOString().split("T")[0];
+  const tomorrow = new Date(Date.now() + 86400000).toISOString().split("T")[0];
+
+  container.innerHTML = `
+    <div class="row g-5">
+      <!-- Left Media Gallery & Details Column -->
+      <div class="col-lg-8">
+        <!-- Main Image -->
+        <div class="position-relative overflow-hidden rounded shadow-sm mb-3">
+          <img id="mainRoomImage" src="${room.image}" alt="${room.title}" class="w-100 object-fit-cover" style="height: 480px;">
+          <span class="room-badge" style="top:20px; right:20px;">${room.badge || 'Luxury'}</span>
+        </div>
+
+        <!-- Thumbnails Gallery -->
+        <div class="row g-2 mb-4">
+          <div class="col-4 col-md-3">
+            <img src="${room.image}" onclick="document.getElementById('mainRoomImage').src='${room.image}'" class="img-fluid rounded border border-gold cursor-pointer" style="height:90px; width:100%; object-fit:cover;">
+          </div>
+          ${(room.gallery || []).map(img => `
+            <div class="col-4 col-md-3">
+              <img src="${img}" onclick="document.getElementById('mainRoomImage').src='${img}'" class="img-fluid rounded border cursor-pointer hover-gold" style="height:90px; width:100%; object-fit:cover;" onerror="this.src='https://picsum.photos/seed/rm/300/200'">
             </div>
           `).join('')}
         </div>
-      </div>
-      <div class="col-lg-6">
-        <span class="badge bg-gold text-dark mb-2">${room.badge}</span>
-        <h2 class="font-heading mb-2">${room.title}</h2>
-        <h4 class="text-gold font-heading mb-3">$${room.price} <small class="text-muted fs-6">/ per night (+tax)</small></h4>
-        <p class="text-muted mb-3">${room.description}</p>
-        
-        <div class="bg-ivory p-3 rounded mb-3 border">
-          <div class="row g-2 text-dark fs-7">
-            <div class="col-6"><i class="fas fa-ruler-combined text-gold me-2"></i><strong>Size:</strong> ${room.size}</div>
-            <div class="col-6"><i class="fas fa-users text-gold me-2"></i><strong>Guests:</strong> ${room.guests}</div>
-            <div class="col-6"><i class="fas fa-bed text-gold me-2"></i><strong>Bed:</strong> ${room.bed}</div>
-            <div class="col-6"><i class="fas fa-mountain text-gold me-2"></i><strong>View:</strong> ${room.view}</div>
+
+        <!-- Title & Rating Header -->
+        <div class="d-flex flex-wrap justify-content-between align-items-center mb-3">
+          <div>
+            <h1 class="font-heading h2 text-emerald mb-1">${room.title}</h1>
+            <div class="d-flex align-items-center gap-2 text-gold fs-7">
+              <i class="fas fa-star"></i><strong>${room.rating || 5.0}</strong>
+              <span class="text-muted">(${room.reviewsCount || 35} verified reviews)</span>
+              <span class="text-muted">• ${room.view || 'Scenic View'}</span>
+            </div>
+          </div>
+          <div class="text-lg-end mt-2 mt-lg-0">
+            <span class="fs-7 text-muted d-block">Starting from</span>
+            <span class="font-heading text-gold fs-2 fw-bold">$${room.price}</span> <small class="text-muted">/ night</small>
           </div>
         </div>
 
-        <h5 class="font-heading text-emerald mb-2">Room Amenities & Services</h5>
-        <div class="row g-2 mb-4">
-          ${room.amenities.map(a => `
-            <div class="col-6 fs-7 text-muted"><i class="fas fa-check-circle text-gold me-2"></i>${a}</div>
-          `).join('')}
+        <div class="section-divider start mb-4"></div>
+
+        <!-- Room Specs Cards -->
+        <div class="bg-ivory p-4 rounded border mb-4">
+          <h5 class="font-heading text-emerald mb-3">Key Accommodations Specifications</h5>
+          <div class="row g-3 fs-7">
+            <div class="col-md-4 col-6">
+              <i class="fas fa-ruler-combined text-gold me-2 fs-6"></i><strong>Room Size:</strong><br><span class="text-muted ms-4">${room.size}</span>
+            </div>
+            <div class="col-md-4 col-6">
+              <i class="fas fa-users text-gold me-2 fs-6"></i><strong>Max Occupancy:</strong><br><span class="text-muted ms-4">${room.guests}</span>
+            </div>
+            <div class="col-md-4 col-6">
+              <i class="fas fa-bed text-gold me-2 fs-6"></i><strong>Bed Layout:</strong><br><span class="text-muted ms-4">${room.bed}</span>
+            </div>
+            <div class="col-md-4 col-6">
+              <i class="fas fa-bath text-gold me-2 fs-6"></i><strong>Bathroom:</strong><br><span class="text-muted ms-4">${room.bathroom || 'Marble Bath & Rain Shower'}</span>
+            </div>
+            <div class="col-md-4 col-6">
+              <i class="fas fa-utensils text-gold me-2 fs-6"></i><strong>Breakfast:</strong><br><span class="text-muted ms-4">${room.breakfast || 'Gourmet Breakfast Included'}</span>
+            </div>
+            <div class="col-md-4 col-6">
+              <i class="fas fa-wifi text-gold me-2 fs-6"></i><strong>Wi-Fi:</strong><br><span class="text-muted ms-4">${room.wifi || 'High-Speed Fiber Included'}</span>
+            </div>
+          </div>
         </div>
 
-        <button class="btn btn-gold w-100 py-2" onclick="selectRoomForBooking('${room.id}'); bootstrap.Modal.getInstance(document.getElementById('roomDetailsModal')).hide();">
-          <i class="fas fa-calendar-check me-2"></i> Reserve This Room Now
-        </button>
+        <!-- Full Description -->
+        <div class="mb-5">
+          <h4 class="font-heading text-emerald mb-3">About ${room.title}</h4>
+          <p class="text-muted leading-relaxed mb-4">${room.fullDescription || room.description}</p>
+        </div>
+
+        <!-- Included Amenities -->
+        <div class="mb-5">
+          <h4 class="font-heading text-emerald mb-3">Room Amenities & Services</h4>
+          <div class="row g-3">
+            ${(room.amenities || []).map(a => `
+              <div class="col-md-6">
+                <div class="d-flex align-items-center p-3 bg-white rounded border">
+                  <i class="fas fa-check-circle text-gold me-3 fs-5"></i>
+                  <span class="fs-7 fw-medium">${a}</span>
+                </div>
+              </div>
+            `).join('')}
+          </div>
+        </div>
+
+        <!-- Special Features -->
+        ${room.features ? `
+          <div class="mb-5">
+            <h4 class="font-heading text-emerald mb-3">Bespoke Room Features</h4>
+            <ul class="list-group list-group-flush border-0">
+              ${room.features.map(f => `
+                <li class="list-group-item bg-transparent border-bottom px-0 py-2 fs-7 text-muted">
+                  <i class="fas fa-gem text-gold me-2"></i> ${f}
+                </li>
+              `).join('')}
+            </ul>
+          </div>
+        ` : ''}
+
+        <!-- Guest Reviews -->
+        <div class="mb-4">
+          <h4 class="font-heading text-emerald mb-3">Verified Guest Reviews</h4>
+          ${(room.reviews && room.reviews.length > 0) ? room.reviews.map(rev => `
+            <div class="bg-white p-4 rounded border mb-3">
+              <div class="d-flex justify-content-between align-items-center mb-2">
+                <h6 class="font-heading text-emerald mb-0 fw-bold">${rev.name}</h6>
+                <div class="text-gold fs-8">
+                  ${Array(rev.rating || 5).fill('<i class="fas fa-star"></i>').join('')}
+                  <small class="text-muted ms-2">${rev.date}</small>
+                </div>
+              </div>
+              <p class="text-muted fs-7 mb-0">"${rev.text}"</p>
+            </div>
+          `).join('') : `
+            <p class="text-muted fs-7">No individual reviews submitted yet for this suite. Rating: 5.0 / 5 stars.</p>
+          `}
+        </div>
+      </div>
+
+      <!-- Right Reservation Sticky Sidebar -->
+      <div class="col-lg-4">
+        <div class="card border-gold p-4 sticky-top" style="top:100px; z-index:100;">
+          <div class="text-center mb-4">
+            <span class="text-muted fs-7 d-block">Reservation Rate</span>
+            <span class="font-heading text-gold fs-1 fw-bold">$${room.price}</span>
+            <small class="text-muted">/ night</small>
+          </div>
+
+          <form onsubmit="event.preventDefault(); goToBookingWithRoom('${room.id}');">
+            <div class="mb-3">
+              <label class="form-label fs-7 fw-bold text-emerald"><i class="far fa-calendar-alt me-1 text-gold"></i> Check-in Date</label>
+              <input type="date" class="form-control" id="detailsCheckIn" value="${today}" min="${today}" required>
+            </div>
+            <div class="mb-3">
+              <label class="form-label fs-7 fw-bold text-emerald"><i class="far fa-calendar-check me-1 text-gold"></i> Check-out Date</label>
+              <input type="date" class="form-control" id="detailsCheckOut" value="${tomorrow}" min="${tomorrow}" required>
+            </div>
+            <div class="mb-4">
+              <label class="form-label fs-7 fw-bold text-emerald"><i class="fas fa-user-friends me-1 text-gold"></i> Guests</label>
+              <select class="form-select" id="detailsGuests">
+                <option value="1">1 Adult</option>
+                <option value="2" selected>2 Guests</option>
+                <option value="3">3 Guests</option>
+                <option value="4">4 Guests</option>
+              </select>
+            </div>
+
+            <div class="bg-ivory p-3 rounded mb-4 text-center fs-8 text-muted">
+              <i class="fas fa-shield-alt text-gold me-1"></i> Instant Confirmation • Free Cancellation 24h Prior
+            </div>
+
+            <button type="submit" class="btn btn-gold w-100 py-3 font-heading tracking-widest text-uppercase">
+              <i class="fas fa-calendar-check me-2"></i> Reserve This Room
+            </button>
+          </form>
+        </div>
       </div>
     </div>
   `;
-
-  const modal = new bootstrap.Modal(document.getElementById("roomDetailsModal"));
-  modal.show();
 }
+
+function goToBookingWithRoom(roomId) {
+  const checkIn = document.getElementById("detailsCheckIn")?.value || "";
+  const checkOut = document.getElementById("detailsCheckOut")?.value || "";
+  window.location.href = `booking.html?room=${encodeURIComponent(roomId)}&checkIn=${encodeURIComponent(checkIn)}&checkOut=${encodeURIComponent(checkOut)}`;
+}
+
+window.goToBookingWithRoom = goToBookingWithRoom;
 
 /* ==========================================================================
    Experiences, Dining & Spa
@@ -473,7 +630,8 @@ function initBookingSystem() {
   if (!roomSelect || !window.VELORA_DATA) return;
 
   // Populate room options
-  roomSelect.innerHTML = window.VELORA_DATA.rooms.map(r => `
+  const roomsList = window.VELORA_ROOMS || window.VELORA_DATA.rooms;
+  roomSelect.innerHTML = roomsList.map(r => `
     <option value="${r.id}" data-price="${r.price}">${r.title} - $${r.price}/night</option>
   `).join('');
 
@@ -502,6 +660,32 @@ function initBookingSystem() {
     });
 
     checkOutInput.addEventListener("change", calculateBookingTotal);
+  }
+
+  // Parse URL Parameters (e.g. booking.html?room=deluxe-king&promo=WEEKEND20&checkIn=2026-08-10&checkOut=2026-08-14)
+  const params = new URLSearchParams(window.location.search);
+  const paramRoom = params.get("room");
+  const paramPromo = params.get("promo");
+  const paramCheckIn = params.get("checkIn");
+  const paramCheckOut = params.get("checkOut");
+  const paramService = params.get("service");
+
+  if (paramRoom && Array.from(roomSelect.options).some(o => o.value === paramRoom)) {
+    roomSelect.value = paramRoom;
+  }
+  if (paramPromo) {
+    const promoInput = document.getElementById("bookPromoCode");
+    if (promoInput) promoInput.value = paramPromo;
+  }
+  if (paramCheckIn && checkInInput) {
+    checkInInput.value = paramCheckIn;
+  }
+  if (paramCheckOut && checkOutInput) {
+    checkOutInput.value = paramCheckOut;
+  }
+  if (paramService) {
+    const specialReq = document.getElementById("bookSpecialRequests");
+    if (specialReq) specialReq.value = `Service Request: ${paramService}`;
   }
 
   roomSelect.addEventListener("change", calculateBookingTotal);
@@ -713,6 +897,81 @@ function openMyBookingsModal() {
   modal.show();
 }
 
+function initMyBookingsPage() {
+  const container = document.getElementById("myBookingsPageContainer");
+  if (!container) return;
+
+  const stored = JSON.parse(localStorage.getItem("velora_bookings") || "[]");
+  const initial = window.VELORA_DATA ? window.VELORA_DATA.initialBookings : [];
+  const allBookings = stored.length > 0 ? stored : initial;
+
+  if (allBookings.length === 0) {
+    container.innerHTML = `
+      <div class="card p-5 text-center">
+        <i class="fas fa-calendar-times text-gold fs-1 mb-3"></i>
+        <h3 class="font-heading text-emerald mb-2">No Active Reservations Found</h3>
+        <p class="text-muted mb-4">You have not placed any room reservations yet with Velora Grand Hotel & Spa.</p>
+        <div>
+          <a href="booking.html" class="btn btn-gold">
+            <i class="fas fa-calendar-plus me-2"></i> Book Your First Stay
+          </a>
+        </div>
+      </div>
+    `;
+  } else {
+    container.innerHTML = `
+      <div class="card p-4 border-gold shadow-sm">
+        <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-2">
+          <div>
+            <h3 class="font-heading text-emerald mb-0">Your Active & Past Stay History</h3>
+            <span class="text-muted fs-7">Manage, review, or modify your current guest reservations</span>
+          </div>
+          <a href="booking.html" class="btn btn-gold btn-sm">
+            <i class="fas fa-plus me-1"></i> New Reservation
+          </a>
+        </div>
+        
+        <div class="table-responsive">
+          <table class="table table-velora align-middle">
+            <thead>
+              <tr>
+                <th>Reservation ID</th>
+                <th>Guest Name</th>
+                <th>Room / Suite</th>
+                <th>Stay Dates</th>
+                <th>Occupancy</th>
+                <th>Total Price</th>
+                <th>Status</th>
+                <th>Action</th>
+              </tr>
+            </thead>
+            <tbody>
+              ${allBookings.map(b => `
+                <tr>
+                  <td><strong class="text-emerald font-heading">${b.id}</strong></td>
+                  <td>${b.guestName}</td>
+                  <td>${b.roomTitle}</td>
+                  <td><small class="d-block fw-bold">${b.checkIn}</small><small class="text-muted">to ${b.checkOut}</small></td>
+                  <td>${b.guests}</td>
+                  <td><strong class="text-gold font-heading fs-5">$${typeof b.totalPrice === 'number' ? b.totalPrice.toFixed(2) : b.totalPrice}</strong></td>
+                  <td>
+                    <span class="badge-status ${b.status.toLowerCase().replace(' ', '-')}">${b.status}</span>
+                  </td>
+                  <td>
+                    ${b.status === "Confirmed" ? `
+                      <button class="btn btn-outline-danger btn-sm fs-8 py-1" onclick="cancelReservation('${b.id}')">Cancel</button>
+                    ` : '<span class="text-muted fs-8">N/A</span>'}
+                  </td>
+                </tr>
+              `).join('')}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    `;
+  }
+}
+
 function cancelReservation(bookingId) {
   if (!confirm(`Are you sure you want to cancel reservation ${bookingId}?`)) return;
 
@@ -726,7 +985,12 @@ function cancelReservation(bookingId) {
     booking.status = "Cancelled";
     localStorage.setItem("velora_bookings", JSON.stringify(stored));
     showToast("Booking Cancelled", `Reservation ${bookingId} has been cancelled.`);
-    openMyBookingsModal();
+    if (document.getElementById("myBookingsModalBody")) {
+      openMyBookingsModal();
+    }
+    if (document.getElementById("myBookingsPageContainer")) {
+      initMyBookingsPage();
+    }
   }
 }
 

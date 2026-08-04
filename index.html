@@ -40,27 +40,27 @@
       <!-- Horizontal Menu Bar -->
       <div class="collapse navbar-collapse" id="veloraNavbar">
         <ul class="navbar-nav mx-auto mb-2 mb-lg-0">
-          <li class="nav-item"><a class="nav-link nav-link-item active" href="#home">Home</a></li>
-          <li class="nav-item"><a class="nav-link nav-link-item" href="#about">About</a></li>
-          <li class="nav-item"><a class="nav-link nav-link-item" href="#rooms">Rooms & Suites</a></li>
-          <li class="nav-item"><a class="nav-link nav-link-item" href="#dining">Dining</a></li>
-          <li class="nav-item"><a class="nav-link nav-link-item" href="#spa">Spa & Wellness</a></li>
-          <li class="nav-item"><a class="nav-link nav-link-item" href="#experiences">Experiences</a></li>
-          <li class="nav-item"><a class="nav-link nav-link-item" href="#offers">Offers</a></li>
-          <li class="nav-item"><a class="nav-link nav-link-item" href="#gallery">Gallery</a></li>
-          <li class="nav-item"><a class="nav-link nav-link-item" href="#reviews">Reviews</a></li>
-          <li class="nav-item"><a class="nav-link nav-link-item" href="#contact">Contact</a></li>
+          <li class="nav-item"><a class="nav-link nav-link-item active" href="index.html">Home</a></li>
+          <li class="nav-item"><a class="nav-link nav-link-item" href="about.html">About</a></li>
+          <li class="nav-item"><a class="nav-link nav-link-item" href="rooms.html">Rooms & Suites</a></li>
+          <li class="nav-item"><a class="nav-link nav-link-item" href="dining.html">Dining</a></li>
+          <li class="nav-item"><a class="nav-link nav-link-item" href="spa.html">Spa & Wellness</a></li>
+          <li class="nav-item"><a class="nav-link nav-link-item" href="experiences.html">Experiences</a></li>
+          <li class="nav-item"><a class="nav-link nav-link-item" href="offers.html">Offers</a></li>
+          <li class="nav-item"><a class="nav-link nav-link-item" href="gallery.html">Gallery</a></li>
+          <li class="nav-item"><a class="nav-link nav-link-item" href="faq.html">FAQ</a></li>
+          <li class="nav-item"><a class="nav-link nav-link-item" href="contact.html">Contact</a></li>
         </ul>
 
         <!-- Right Side Utility Controls -->
         <div class="d-flex align-items-center gap-2">
-          <button class="btn btn-outline-gold btn-sm" onclick="openMyBookingsModal()">
+          <a href="my-bookings.html" class="btn btn-outline-gold btn-sm">
             <i class="fas fa-suitcase me-1"></i> My Bookings
-          </button>
-          <a href="#booking" class="btn btn-gold btn-sm">Book Your Stay</a>
-          <button class="btn btn-outline-light btn-sm ms-1" onclick="openAdminDashboard()" title="Admin Management Panel">
+          </a>
+          <a href="booking.html" class="btn btn-gold btn-sm">Book Your Stay</a>
+          <a href="admin.html" class="btn btn-outline-light btn-sm ms-1" title="Admin Management Panel">
             <i class="fas fa-user-shield"></i>
-          </button>
+          </a>
         </div>
       </div>
     </div>
@@ -644,11 +644,11 @@
         <div class="col-lg-2 col-md-4">
           <h5 class="font-heading text-white mb-3">Navigation</h5>
           <ul class="list-unstyled">
-            <li><a href="#home" class="footer-link">Home</a></li>
-            <li><a href="#about" class="footer-link">About Us</a></li>
-            <li><a href="#rooms" class="footer-link">Rooms & Suites</a></li>
-            <li><a href="#dining" class="footer-link">Dining</a></li>
-            <li><a href="#spa" class="footer-link">Spa & Wellness</a></li>
+            <li><a href="index.html" class="footer-link">Home</a></li>
+            <li><a href="about.html" class="footer-link">About Us</a></li>
+            <li><a href="rooms.html" class="footer-link">Rooms & Suites</a></li>
+            <li><a href="dining.html" class="footer-link">Dining</a></li>
+            <li><a href="spa.html" class="footer-link">Spa & Wellness</a></li>
           </ul>
         </div>
 
@@ -656,11 +656,13 @@
         <div class="col-lg-2 col-md-4">
           <h5 class="font-heading text-white mb-3">Hotel Services</h5>
           <ul class="list-unstyled">
-            <li><a href="#experiences" class="footer-link">Experiences</a></li>
-            <li><a href="#gallery" class="footer-link">Gallery</a></li>
-            <li><a href="#offers" class="footer-link">Special Offers</a></li>
-            <li><a href="#booking" class="footer-link">Reservation</a></li>
-            <li><a href="javascript:void(0)" onclick="openMyBookingsModal()" class="footer-link">My Bookings</a></li>
+            <li><a href="experiences.html" class="footer-link">Experiences</a></li>
+            <li><a href="gallery.html" class="footer-link">Gallery</a></li>
+            <li><a href="offers.html" class="footer-link">Special Offers</a></li>
+            <li><a href="booking.html" class="footer-link">Reservation</a></li>
+            <li><a href="my-bookings.html" class="footer-link">My Bookings</a></li>
+            <li><a href="faq.html" class="footer-link">FAQs</a></li>
+            <li><a href="admin.html" class="footer-link">Admin Panel</a></li>
           </ul>
         </div>
 
@@ -858,6 +860,7 @@
 
   <!-- Velora System Scripts -->
   <script src="js/data.js"></script>
+  <script src="js/rooms-data.js"></script>
   <script src="js/app.js"></script>
   <script src="js/admin.js"></script>
 </body>
