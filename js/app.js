@@ -32,6 +32,24 @@ document.addEventListener("DOMContentLoaded", function () {
    Theme & Utility Functions
    ========================================================================== */
 
+window.handleImgError = function (img, title) {
+  if (!img) return;
+  const count = parseInt(img.dataset.errCount || "0", 10);
+  img.dataset.errCount = (count + 1).toString();
+
+  const cleanTitle = (title || 'Velora Luxury').replace(/'/g, "");
+
+  if (count === 0) {
+    const seed = encodeURIComponent(cleanTitle.toLowerCase().replace(/[^a-z0-9]/g, "-"));
+    img.src = `https://picsum.photos/seed/${seed}/800/600`;
+  } else {
+    img.onerror = null;
+    const svgTitle = encodeURIComponent(cleanTitle);
+    const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="800" height="600" viewBox="0 0 800 600"><defs><linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="%230B2924"/><stop offset="100%" stop-color="%23123C35"/></linearGradient></defs><rect width="800" height="600" fill="url(%23bg)"/><rect x="30" y="30" width="740" height="540" fill="none" stroke="%23D6B878" stroke-width="2" stroke-dasharray="6,6"/><circle cx="400" cy="230" r="60" fill="%230B2924" stroke="%23D6B878" stroke-width="2"/><path d="M370 245 L400 210 L430 245 Z" fill="%23D6B878"/><path d="M380 255 H420 V265 H380 Z" fill="%23D6B878"/><text x="400" y="340" font-family="Georgia, serif" font-size="26" fill="%23D6B878" text-anchor="middle" font-weight="bold">${svgTitle}</text><text x="400" y="380" font-family="sans-serif" font-size="16" fill="%23C0D2CC" text-anchor="middle">Velora Grand Hotel %26 Spa</text></svg>`;
+    img.src = `data:image/svg+xml;utf8,${svg}`;
+  }
+};
+
 function initTheme() {
   const savedTheme = localStorage.getItem("velora_theme") || "dark";
   document.documentElement.setAttribute("data-theme", savedTheme);
@@ -229,7 +247,7 @@ function renderRooms(filterCategory = "all") {
     <div class="col-lg-4 col-md-6 mb-4">
       <div class="room-card">
         <div class="room-img-wrapper">
-          <img src="${safeImage}" alt="${safeTitle}" class="room-img" loading="lazy" referrerpolicy="no-referrer" onerror="this.onerror=null; this.src='https://images.unsplash.com/photo-1618773928121-c32242e63f39?auto=format&fit=crop&w=1200&q=80';">
+          <img src="${safeImage}" alt="${safeTitle}" class="room-img" loading="lazy" onerror="handleImgError(this, '${safeTitle}')">
           <span class="room-badge">${room.badge || 'Luxury'}</span>
           <div class="room-price-tag">
             <span class="room-price-amount">$${room.price}</span> <small class="text-white-50">/ night</small>
@@ -309,24 +327,26 @@ function initRoomDetailsPage() {
   const today = new Date().toISOString().split("T")[0];
   const tomorrow = new Date(Date.now() + 86400000).toISOString().split("T")[0];
 
+  const safeRoomTitle = (room.title || 'Room Details').replace(/'/g, "\\'");
+
   container.innerHTML = `
     <div class="row g-5">
       <!-- Left Media Gallery & Details Column -->
       <div class="col-lg-8">
         <!-- Main Image -->
         <div class="position-relative overflow-hidden rounded shadow-sm mb-3">
-          <img id="mainRoomImage" src="${room.image}" alt="${room.title}" class="w-100 object-fit-cover rounded border border-gold" style="height: 480px;" referrerpolicy="no-referrer" onerror="this.onerror=null; this.src='https://picsum.photos/seed/${room.id}/1200/800';">
+          <img id="mainRoomImage" src="${room.image}" alt="${safeRoomTitle}" class="w-100 object-fit-cover rounded border border-gold" style="height: 480px;" onerror="handleImgError(this, '${safeRoomTitle}')">
           <span class="room-badge" style="top:20px; right:20px;">${room.badge || 'Luxury'}</span>
         </div>
 
         <!-- Thumbnails Gallery -->
         <div class="row g-2 mb-4">
           <div class="col-4 col-md-3">
-            <img src="${room.image}" onclick="document.getElementById('mainRoomImage').src='${room.image}'" class="img-fluid rounded border border-gold cursor-pointer" style="height:90px; width:100%; object-fit:cover;" referrerpolicy="no-referrer" onerror="this.onerror=null; this.src='https://picsum.photos/seed/${room.id}/400/300';">
+            <img src="${room.image}" onclick="document.getElementById('mainRoomImage').src='${room.image}'" class="img-fluid rounded border border-gold cursor-pointer" style="height:90px; width:100%; object-fit:cover;" onerror="handleImgError(this, '${safeRoomTitle}')">
           </div>
           ${(room.gallery || []).map((img, i) => `
             <div class="col-4 col-md-3">
-              <img src="${img}" onclick="document.getElementById('mainRoomImage').src='${img}'" class="img-fluid rounded border cursor-pointer hover-gold" style="height:90px; width:100%; object-fit:cover;" referrerpolicy="no-referrer" onerror="this.onerror=null; this.src='https://picsum.photos/seed/${room.id}-${i}/400/300';">
+              <img src="${img}" onclick="document.getElementById('mainRoomImage').src='${img}'" class="img-fluid rounded border cursor-pointer hover-gold" style="height:90px; width:100%; object-fit:cover;" onerror="handleImgError(this, '${safeRoomTitle} Photo ${i+1}')">
             </div>
           `).join('')}
         </div>
@@ -487,10 +507,12 @@ function renderExperiences() {
   const container = document.getElementById("experiencesContainer");
   if (!container || !window.VELORA_DATA) return;
 
-  container.innerHTML = window.VELORA_DATA.experiences.map(exp => `
+  container.innerHTML = window.VELORA_DATA.experiences.map(exp => {
+    const safeTitle = (exp.title || 'Experience').replace(/'/g, "\\'");
+    return `
     <div class="col-lg-3 col-md-6 mb-4">
       <div class="experience-card">
-        <img src="${exp.image}" alt="${exp.title}" class="experience-img" loading="lazy" onerror="this.src='https://picsum.photos/seed/exp/600/400'">
+        <img src="${exp.image}" alt="${safeTitle}" class="experience-img" loading="lazy" onerror="handleImgError(this, '${safeTitle}')">
         <div class="experience-overlay">
           <span class="experience-subtitle">${exp.subtitle}</span>
           <h3 class="experience-title">${exp.title}</h3>
@@ -498,7 +520,7 @@ function renderExperiences() {
         </div>
       </div>
     </div>
-  `).join('');
+  `}).join('');
 }
 
 function renderDiningMenu(category = 'breakfast') {
@@ -542,10 +564,12 @@ function renderSpaServices() {
   const container = document.getElementById("spaContainer");
   if (!container || !window.VELORA_DATA) return;
 
-  container.innerHTML = window.VELORA_DATA.spa.map(s => `
+  container.innerHTML = window.VELORA_DATA.spa.map(s => {
+    const safeTitle = (s.title || 'Spa Treatment').replace(/'/g, "\\'");
+    return `
     <div class="col-lg-4 col-md-6 mb-4">
       <div class="spa-card">
-        <img src="${s.image}" alt="${s.title}" class="spa-img" loading="lazy" onerror="this.src='https://picsum.photos/seed/spa/600/400'">
+        <img src="${s.image}" alt="${safeTitle}" class="spa-img" loading="lazy" onerror="handleImgError(this, '${safeTitle}')">
         <div class="spa-body">
           <div class="d-flex justify-content-between align-items-center mb-2">
             <span class="badge bg-emerald text-gold">${s.duration}</span>
@@ -559,7 +583,7 @@ function renderSpaServices() {
         </div>
       </div>
     </div>
-  `).join('');
+  `}).join('');
 }
 
 function bookSpaService(serviceName) {
@@ -657,7 +681,7 @@ function renderGallery(filterCategory = "all") {
     return `
     <div class="col-lg-4 col-md-6 mb-4">
       <div class="gallery-item" onclick="openLightbox('${safeImage}', '${safeTitle}')">
-        <img src="${safeImage}" alt="${safeTitle}" class="gallery-img" loading="lazy" referrerpolicy="no-referrer" onerror="this.onerror=null; this.src='https://images.unsplash.com/photo-1566073771259-6a8506099945?auto=format&fit=crop&w=1200&q=80';">
+        <img src="${safeImage}" alt="${safeTitle}" class="gallery-img" loading="lazy" onerror="handleImgError(this, '${safeTitle}')">
         <div class="gallery-overlay">
           <div class="gallery-icon"><i class="fas fa-search-plus"></i></div>
           <h5 class="font-heading mb-0 text-white">${item.title}</h5>
