@@ -284,6 +284,46 @@ h1, h2, h3, h4, h5, h6, .font-heading {
   width: 80%;
 }
 
+/* Luxury Velora Dropdown Styling */
+.velora-navbar .dropdown-menu {
+  background-color: #0b1f33 !important;
+  border: 1px solid var(--velora-gold) !important;
+  border-radius: 6px;
+  padding: 0.5rem 0;
+  margin-top: 0.5rem;
+  box-shadow: 0 12px 35px rgba(0, 0, 0, 0.5);
+}
+
+.velora-navbar .dropdown-item {
+  color: #E2DBD0 !important;
+  font-size: 0.85rem;
+  font-weight: 500;
+  letter-spacing: 0.05em;
+  padding: 0.65rem 1.25rem;
+  transition: all 0.25s ease;
+}
+
+.velora-navbar .dropdown-item:hover,
+.velora-navbar .dropdown-item:focus {
+  background-color: rgba(201, 169, 110, 0.18) !important;
+  color: var(--velora-gold) !important;
+  padding-left: 1.5rem;
+}
+
+.velora-navbar .dropdown-toggle::after {
+  margin-left: 0.4em;
+  vertical-align: 0.15em;
+  color: var(--velora-gold);
+}
+
+@media (min-width: 992px) {
+  .velora-navbar .nav-item.dropdown:hover .dropdown-menu {
+    display: block;
+    margin-top: 0;
+    animation: fadeInDown 0.25s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  }
+}
+
 /* Desktop Navbar menu spacing single horizontal line */
 @media (min-width: 1200px) {
   .navbar-nav {

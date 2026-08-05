@@ -42,7 +42,17 @@
         <ul class="navbar-nav mx-auto mb-2 mb-lg-0">
           <li class="nav-item"><a class="nav-link nav-link-item active" href="index.html">Home</a></li>
           <li class="nav-item"><a class="nav-link nav-link-item" href="about.html">About</a></li>
-          <li class="nav-item"><a class="nav-link nav-link-item" href="rooms.html">Rooms & Suites</a></li>
+          <li class="nav-item dropdown">
+            <a class="nav-link nav-link-item dropdown-toggle" href="rooms.html" id="roomsDropdown_index" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+              Rooms & Suites
+            </a>
+            <ul class="dropdown-menu shadow" aria-labelledby="roomsDropdown_index">
+              <li><a class="dropdown-item" href="rooms.html"><i class="fas fa-bed me-2 text-gold"></i> All Rooms & Suites</a></li>
+              <li><hr class="dropdown-divider border-secondary opacity-25 my-1"></li>
+              <li><a class="dropdown-item" href="dining.html"><i class="fas fa-utensils me-2 text-gold"></i> Dining</a></li>
+              <li><a class="dropdown-item" href="spa.html"><i class="fas fa-spa me-2 text-gold"></i> Spa & Wellness</a></li>
+            </ul>
+          </li>
           <li class="nav-item"><a class="nav-link nav-link-item" href="dining.html">Dining</a></li>
           <li class="nav-item"><a class="nav-link nav-link-item" href="spa.html">Spa & Wellness</a></li>
           <li class="nav-item"><a class="nav-link nav-link-item" href="experiences.html">Experiences</a></li>
