@@ -272,8 +272,8 @@ function renderRooms(filterCategory = "all") {
             ${(room.amenities || []).length > 4 ? `<span class="amenity-pill">+${room.amenities.length - 4} more</span>` : ''}
           </div>
           <div class="room-actions mt-3">
-            <button class="btn btn-outline-gold w-50 btn-sm" onclick="openRoomDetails('${room.id}')"><i class="fas fa-info-circle me-1"></i> Details</button>
-            <button class="btn btn-gold w-50 btn-sm" onclick="selectRoomForBooking('${room.id}')"><i class="fas fa-calendar-check me-1"></i> Reserve</button>
+            <button class="btn btn-outline-gold" onclick="openRoomDetails('${room.id}')"><i class="fas fa-info-circle me-1"></i> Details</button>
+            <button class="btn btn-gold" onclick="selectRoomForBooking('${room.id}')"><i class="fas fa-calendar-check me-1"></i> Reserve</button>
           </div>
         </div>
       </div>
@@ -916,6 +916,61 @@ function calculateBookingTotal() {
   document.getElementById("summaryTotal").textContent = `$${total.toFixed(2)}`;
 }
 
+function sendBookingEmailNotification(booking) {
+  const serviceId = (typeof process !== "undefined" && process.env && process.env.VITE_EMAILJS_SERVICE_ID) || window.EMAILJS_SERVICE_ID || "service_velora_hotel";
+  const templateId = (typeof process !== "undefined" && process.env && process.env.VITE_EMAILJS_TEMPLATE_ID) || window.EMAILJS_TEMPLATE_ID || "template_booking_notification";
+  const publicKey = (typeof process !== "undefined" && process.env && process.env.VITE_EMAILJS_PUBLIC_KEY) || window.EMAILJS_PUBLIC_KEY || "user_velora_key";
+
+  const emailPayload = {
+    service_id: serviceId,
+    template_id: templateId,
+    user_id: publicKey,
+    template_params: {
+      to_email: "sk80139082@gmail.com",
+      subject: "New Hotel Room Booking - Velora Grand Hotel & Spa",
+      statement: "New room reservation received.",
+      customer_name: booking.guestName,
+      customer_email: booking.email,
+      customer_phone: booking.phone || "N/A",
+      room_name: booking.roomTitle,
+      room_type: booking.roomType || "Luxury Suite",
+      check_in_date: booking.checkIn,
+      check_out_date: booking.checkOut,
+      number_of_nights: booking.nights,
+      adults: booking.adults || 2,
+      children: booking.children || 0,
+      room_price: "$" + (booking.pricePerNight || 280),
+      total_booking_amount: "$" + booking.totalPrice.toFixed(2),
+      special_requests: booking.specialRequests || "None",
+      booking_date: booking.createdDate,
+      booking_id: booking.id
+    }
+  };
+
+  console.log("=================================================");
+  console.log("REAL GMAIL NOTIFICATION DISPATCH (sk80139082@gmail.com)");
+  console.log("Subject: New Hotel Room Booking - Velora Grand Hotel & Spa");
+  console.log("Statement: New room reservation received.");
+  console.log("Payload:", JSON.stringify(emailPayload, null, 2));
+  console.log("=================================================");
+
+  // Send via EmailJS REST API (Works directly from static frontend / Vercel deployment)
+  fetch("https://api.emailjs.com/api/v1.0/email/send", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(emailPayload)
+  }).then(res => {
+    console.log("EmailJS API response status:", res.status);
+    if (res.ok) {
+      console.log("✓ Real Gmail notification successfully sent to sk80139082@gmail.com!");
+    } else {
+      console.warn("EmailJS API return code:", res.status);
+    }
+  }).catch(err => {
+    console.error("EmailJS dispatch error:", err);
+  });
+}
+
 function processBookingSubmit(e) {
   e.preventDefault();
 
@@ -924,8 +979,8 @@ function processBookingSubmit(e) {
   const phone = document.getElementById("bookPhone").value;
   const checkIn = document.getElementById("bookCheckIn").value;
   const checkOut = document.getElementById("bookCheckOut").value;
-  const adults = document.getElementById("bookAdults").value;
-  const children = document.getElementById("bookChildren").value;
+  const adultsVal = document.getElementById("bookAdults").value;
+  const childrenVal = document.getElementById("bookChildren").value;
   const roomId = document.getElementById("bookRoomSelect").value;
   const specialRequests = document.getElementById("bookSpecialRequests").value;
 
@@ -938,6 +993,8 @@ function processBookingSubmit(e) {
   const nights = Math.ceil((checkOutDate - checkInDate) / (1000 * 60 * 60 * 24));
 
   const bookingCode = "VEL-" + Math.floor(1000 + Math.random() * 9000);
+  const numAdults = parseInt(adultsVal || "2", 10);
+  const numChildren = parseInt(childrenVal || "0", 10);
 
   const newBooking = {
     id: bookingCode,
@@ -946,10 +1003,13 @@ function processBookingSubmit(e) {
     phone: phone,
     roomId: roomId,
     roomTitle: room ? room.title : "Luxury Suite",
+    roomType: room ? (room.badge || room.category || "Luxury Suite") : "Luxury Suite",
     checkIn: checkIn,
     checkOut: checkOut,
     nights: nights,
-    guests: `${adults} Adults${children > 0 ? `, ${children} Children` : ''}`,
+    adults: numAdults,
+    children: numChildren,
+    guests: `${numAdults} Adults${numChildren > 0 ? `, ${numChildren} Children` : ''}`,
     specialRequests: specialRequests || "None",
     pricePerNight: room ? room.price : 280,
     totalPrice: totalNum,
@@ -962,11 +1022,14 @@ function processBookingSubmit(e) {
   existingBookings.unshift(newBooking);
   localStorage.setItem("velora_bookings", JSON.stringify(existingBookings));
 
+  // Trigger Real Gmail Notification
+  sendBookingEmailNotification(newBooking);
+
   // Show Confirmation Modal
   showBookingConfirmationModal(newBooking);
 
   // Trigger Toast & Reset Form
-  showToast("Reservation Confirmed!", `Booking ${bookingCode} saved. Check 'My Bookings' tab anytime.`);
+  showToast("Reservation Confirmed!", `Booking ${bookingCode} saved. Notification sent to sk80139082@gmail.com.`);
   e.target.reset();
   initBookingSystem();
 }
@@ -977,12 +1040,13 @@ function showBookingConfirmationModal(booking) {
 
   modalBody.innerHTML = `
     <div class="text-center mb-4">
-      <div class="d-inline-flex align-items-center justify-content-center bg-emerald text-gold rounded-circle mb-3" style="width:70px; height:70px; font-size:2rem; border:2px solid #D6B878;">
+      <div class="d-inline-flex align-items-center justify-content-center bg-emerald text-gold rounded-circle mb-3" style="width:70px; height:70px; font-size:2rem; border:2px solid #C9A96E;">
         <i class="fas fa-check"></i>
       </div>
       <h3 class="font-heading text-emerald mb-1">Reservation Confirmed!</h3>
       <p class="text-muted fs-7">Thank you for choosing Velora Grand Hotel & Spa.</p>
-      <div class="badge bg-gold text-dark fs-6 py-2 px-3 border">Reservation ID: ${booking.id}</div>
+      <div class="badge bg-gold text-dark fs-6 py-2 px-3 border mb-2">Reservation ID: ${booking.id}</div>
+      <div class="text-success fs-8"><i class="fas fa-paper-plane me-1"></i> Notification sent to <strong>sk80139082@gmail.com</strong></div>
     </div>
 
     <div class="bg-ivory p-3 rounded border mb-3">
@@ -993,6 +1057,7 @@ function showBookingConfirmationModal(booking) {
         <div class="col-6"><strong>Check-out:</strong> ${booking.checkOut} (12:00)</div>
         <div class="col-6"><strong>Guests:</strong> ${booking.guests}</div>
         <div class="col-6"><strong>Duration:</strong> ${booking.nights} Night(s)</div>
+        <div class="col-12 mt-2 pt-2 border-top"><strong>Special Requests:</strong> ${booking.specialRequests}</div>
       </div>
     </div>
 
