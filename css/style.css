@@ -489,6 +489,13 @@ h1, h2, h3, h4, h5, h6, .font-heading {
   margin-top: 0.25rem;
 }
 
+/* Equal Height Grid & Cards for Main Website */
+.row.g-4 > [class*="col-"],
+.row.g-3 > [class*="col-"] {
+  display: flex;
+  flex-direction: column;
+}
+
 /* Room Cards - Editorial Style */
 .room-card {
   background: var(--velora-white);
@@ -498,6 +505,7 @@ h1, h2, h3, h4, h5, h6, .font-heading {
   box-shadow: var(--velora-shadow-md);
   transition: all 0.4s ease;
   height: 100%;
+  width: 100%;
   display: flex;
   flex-direction: column;
 }
@@ -569,12 +577,17 @@ h1, h2, h3, h4, h5, h6, .font-heading {
   padding: 1.75rem;
   display: flex;
   flex-direction: column;
-  flex-grow: 1;
+  flex: 1 1 auto;
 }
 
 .room-title {
   font-size: 1.65rem;
   margin-bottom: 0.5rem;
+  min-height: 2.2rem;
+  display: -webkit-box;
+  -webkit-line-clamp: 1;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
 }
 
 .room-specs {
@@ -597,6 +610,11 @@ h1, h2, h3, h4, h5, h6, .font-heading {
   color: var(--velora-muted);
   margin-bottom: 1.25rem;
   line-height: 1.6;
+  min-height: 4.5em;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
 }
 
 .room-amenities-pills {
@@ -604,6 +622,8 @@ h1, h2, h3, h4, h5, h6, .font-heading {
   flex-wrap: wrap;
   gap: 0.35rem;
   margin-bottom: 1.5rem;
+  min-height: 52px;
+  align-content: flex-start;
 }
 
 .amenity-pill {
@@ -773,6 +793,10 @@ h1, h2, h3, h4, h5, h6, .font-heading {
   border: 1px solid var(--velora-border);
   box-shadow: var(--velora-shadow-sm);
   transition: all 0.3s ease;
+  height: 100%;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
 }
 
 .spa-card:hover {
@@ -788,6 +812,13 @@ h1, h2, h3, h4, h5, h6, .font-heading {
 
 .spa-body {
   padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  flex: 1 1 auto;
+}
+
+.spa-body .btn {
+  margin-top: auto;
 }
 
 /* Special Offers Cards */
@@ -799,6 +830,17 @@ h1, h2, h3, h4, h5, h6, .font-heading {
   border: 1px solid var(--velora-gold);
   box-shadow: var(--velora-shadow-lg);
   position: relative;
+  height: 100%;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.offer-card .card-body,
+.offer-card .p-4 {
+  display: flex;
+  flex-direction: column;
+  flex: 1 1 auto;
 }
 
 .offer-badge {
