@@ -10,7 +10,7 @@ CREATE TABLE IF NOT EXISTS public.admins (
 
 -- Insert initial admin user
 INSERT INTO public.admins (username, email)
-VALUES ('saqibkhan', 'sk80139082@gmail.com')
+VALUES ('saqibkhan', 'sk8013908@gmail.com')
 ON CONFLICT (username) DO NOTHING;
 
 -- 2. Create Rooms Table

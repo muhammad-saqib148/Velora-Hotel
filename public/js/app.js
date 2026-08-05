@@ -926,7 +926,7 @@ function sendBookingEmailNotification(booking) {
     template_id: templateId,
     user_id: publicKey,
     template_params: {
-      to_email: "sk80139082@gmail.com",
+      to_email: "sk8013908@gmail.com",
       subject: "New Hotel Room Booking - Velora Grand Hotel & Spa",
       statement: "New room reservation received.",
       customer_name: booking.guestName,
@@ -948,7 +948,7 @@ function sendBookingEmailNotification(booking) {
   };
 
   console.log("=================================================");
-  console.log("REAL GMAIL NOTIFICATION DISPATCH (sk80139082@gmail.com)");
+  console.log("REAL GMAIL NOTIFICATION DISPATCH (sk8013908@gmail.com)");
   console.log("Subject: New Hotel Room Booking - Velora Grand Hotel & Spa");
   console.log("Statement: New room reservation received.");
   console.log("Payload:", JSON.stringify(emailPayload, null, 2));
@@ -962,7 +962,7 @@ function sendBookingEmailNotification(booking) {
   }).then(res => {
     console.log("EmailJS API response status:", res.status);
     if (res.ok) {
-      console.log("✓ Real Gmail notification successfully sent to sk80139082@gmail.com!");
+      console.log("✓ Real Gmail notification successfully sent to sk8013908@gmail.com!");
     } else {
       console.warn("EmailJS API return code:", res.status);
     }
@@ -1029,7 +1029,7 @@ function processBookingSubmit(e) {
   showBookingConfirmationModal(newBooking);
 
   // Trigger Toast & Reset Form
-  showToast("Reservation Confirmed!", `Booking ${bookingCode} saved. Notification sent to sk80139082@gmail.com.`);
+  showToast("Reservation Confirmed!", `Booking ${bookingCode} saved. Notification sent to sk8013908@gmail.com.`);
   e.target.reset();
   initBookingSystem();
 }
@@ -1046,7 +1046,7 @@ function showBookingConfirmationModal(booking) {
       <h3 class="font-heading text-emerald mb-1">Reservation Confirmed!</h3>
       <p class="text-muted fs-7">Thank you for choosing Velora Grand Hotel & Spa.</p>
       <div class="badge bg-gold text-dark fs-6 py-2 px-3 border mb-2">Reservation ID: ${booking.id}</div>
-      <div class="text-success fs-8"><i class="fas fa-paper-plane me-1"></i> Notification sent to <strong>sk80139082@gmail.com</strong></div>
+      <div class="text-success fs-8"><i class="fas fa-paper-plane me-1"></i> Notification sent to <strong>sk8013908@gmail.com</strong></div>
     </div>
 
     <div class="bg-ivory p-3 rounded border mb-3">

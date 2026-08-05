@@ -1021,7 +1021,7 @@ async function processBookingSubmit(e) {
     createdDate: new Date().toISOString().split("T")[0]
   };
 
-  // Save to Supabase (and trigger real Gmail notification to sk80139082@gmail.com)
+  // Save to Supabase (and trigger real Gmail notification to sk8013908@gmail.com)
   if (window.VeloraSupabase && typeof window.VeloraSupabase.saveNewBooking === "function") {
     await window.VeloraSupabase.saveNewBooking(newBooking);
   } else {
@@ -1052,7 +1052,7 @@ function showBookingConfirmationModal(booking) {
       <h3 class="font-heading text-emerald mb-1">Reservation Submitted!</h3>
       <p class="text-muted fs-7">Your booking request has been submitted to management for approval.</p>
       <div class="badge bg-warning text-dark fs-6 py-2 px-3 border mb-2">Reservation ID: ${booking.id} • STATUS: PENDING</div>
-      <div class="text-success fs-8"><i class="fas fa-paper-plane me-1"></i> Admin notification sent to <strong>sk80139082@gmail.com</strong></div>
+      <div class="text-success fs-8"><i class="fas fa-paper-plane me-1"></i> Admin notification sent to <strong>sk8013908@gmail.com</strong></div>
     </div>
 
     <div class="bg-ivory p-3 rounded border mb-3">

@@ -34,7 +34,7 @@
     // ------------------------------------------------------------------
     async authenticateAdmin(usernameOrEmail, password) {
       // Credentials: saqibkhan / s@qib5800
-      const validUsernames = ["saqibkhan", "sk8013908@gmail.com", "sk80139082@gmail.com", "sk8013908", "admin@veloragrand.com", "admin"];
+      const validUsernames = ["saqibkhan", "sk8013908@gmail.com", "sk8013908@gmail.com", "sk8013908", "admin@veloragrand.com", "admin"];
       const validPasses = ["s@qib5800", "s@qib123", "saqib123", "admin123", "admin", "password"];
 
       const cleanUser = (usernameOrEmail || "").trim().toLowerCase();
@@ -319,7 +319,7 @@
         }
       }
 
-      // 3. Dispatch Email Notification to Admin (sk80139082@gmail.com)
+      // 3. Dispatch Email Notification to Admin (sk8013908@gmail.com)
       this.sendAdminEmailNotification(bookingData);
 
       return bookingData;

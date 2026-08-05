@@ -8,7 +8,7 @@ const VELORA_DATA = {
     tagline: "Luxury, Serenity & Exceptional Hospitality",
     address: "Islamabad & Rawalpindi, Pakistan",
     phone: "+92 349 1905800",
-    email: "sk80139082@gmail.com",
+    email: "sk8013908@gmail.com",
     whatsapp: "+92 349 1905800",
     totalRooms: 120,
     checkInTime: "14:00",
