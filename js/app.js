@@ -931,9 +931,8 @@ function sendBookingEmailNotification(booking) {
     template_id: templateId,
     user_id: publicKey,
     template_params: {
-      to_email: "sk80139082@gmail.com",
-      subject: "New Hotel Room Booking - Velora Grand Hotel & Spa",
-      statement: "New room reservation received.",
+      to_email: "sk8013908@gmail.com",
+      subject: "New Room Booking - Velora Grand Hotel & Spa",
       customer_name: booking.guestName,
       customer_email: booking.email,
       customer_phone: booking.phone || "N/A",
@@ -941,25 +940,24 @@ function sendBookingEmailNotification(booking) {
       room_type: booking.roomType || "Luxury Suite",
       check_in_date: booking.checkIn,
       check_out_date: booking.checkOut,
-      number_of_nights: booking.nights,
       adults: booking.adults || 2,
       children: booking.children || 0,
-      room_price: "$" + (booking.pricePerNight || 280),
-      total_booking_amount: "$" + booking.totalPrice.toFixed(2),
+      number_of_nights: booking.nights || 1,
+      total_amount: "$" + (parseFloat(booking.totalPrice) || 280).toFixed(2),
       special_requests: booking.specialRequests || "None",
-      booking_date: booking.createdDate,
-      booking_id: booking.id
+      booking_id: booking.id,
+      booking_status: booking.status || "PENDING",
+      booking_date: booking.createdDate || new Date().toISOString().split("T")[0]
     }
   };
 
   console.log("=================================================");
-  console.log("REAL GMAIL NOTIFICATION DISPATCH (sk80139082@gmail.com)");
-  console.log("Subject: New Hotel Room Booking - Velora Grand Hotel & Spa");
-  console.log("Statement: New room reservation received.");
+  console.log("REAL GMAIL NOTIFICATION DISPATCH (sk8013908@gmail.com)");
+  console.log("Subject: New Room Booking - Velora Grand Hotel & Spa");
   console.log("Payload:", JSON.stringify(emailPayload, null, 2));
   console.log("=================================================");
 
-  // Send via EmailJS REST API (Works directly from static frontend / Vercel deployment)
+  // Send via EmailJS REST API
   fetch("https://api.emailjs.com/api/v1.0/email/send", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
@@ -967,7 +965,7 @@ function sendBookingEmailNotification(booking) {
   }).then(res => {
     console.log("EmailJS API response status:", res.status);
     if (res.ok) {
-      console.log("✓ Real Gmail notification successfully sent to sk80139082@gmail.com!");
+      console.log("✓ Real Gmail notification successfully sent to sk8013908@gmail.com!");
     } else {
       console.warn("EmailJS API return code:", res.status);
     }

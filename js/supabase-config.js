@@ -33,15 +33,15 @@
     // 1. ADMIN AUTHENTICATION
     // ------------------------------------------------------------------
     async authenticateAdmin(usernameOrEmail, password) {
-      // Direct credentials check: saqibkhan or sk8013908@gmail.com / s@qib123
+      // Credentials: saqibkhan / s@qib5800
       const validUsernames = ["saqibkhan", "sk8013908@gmail.com", "sk80139082@gmail.com", "sk8013908", "admin@veloragrand.com", "admin"];
-      const validPasses = ["s@qib123", "saqib123", "admin123", "admin", "password"];
+      const validPasses = ["s@qib5800", "s@qib123", "saqib123", "admin123", "admin", "password"];
 
       const cleanUser = (usernameOrEmail || "").trim().toLowerCase();
       const cleanPass = (password || "").trim();
 
       const isUserValid = validUsernames.some(u => u.toLowerCase() === cleanUser);
-      const isPassValid = validPasses.some(p => p === cleanPass) || cleanUser === "sk8013908@gmail.com";
+      const isPassValid = validPasses.some(p => p === cleanPass);
 
       if (isUserValid && isPassValid) {
         const adminSession = {
@@ -394,31 +394,29 @@
         template_id: templateId,
         user_id: publicKey,
         template_params: {
-          to_email: "sk80139082@gmail.com",
-          subject: "New Hotel Booking Request - Velora Grand Hotel & Spa",
-          statement: "New room reservation received.",
-          customer_name: booking.guestName,
-          customer_email: booking.email,
-          customer_phone: booking.phone || "N/A",
-          room_name: booking.roomTitle,
+          to_email: "sk8013908@gmail.com",
+          subject: "New Room Booking - Velora Grand Hotel & Spa",
+          customer_name: booking.guestName || booking.customer_name,
+          customer_email: booking.email || booking.customer_email,
+          customer_phone: booking.phone || booking.customer_phone || "N/A",
+          room_name: booking.roomTitle || booking.room_name || "Luxury Suite",
           room_type: booking.roomType || "Luxury Suite",
-          check_in_date: booking.checkIn,
-          check_out_date: booking.checkOut,
-          number_of_nights: booking.nights,
+          check_in_date: booking.checkIn || booking.check_in,
+          check_out_date: booking.checkOut || booking.check_out,
           adults: booking.adults || 2,
           children: booking.children || 0,
-          room_price: "$" + (booking.pricePerNight || 280),
-          total_booking_amount: "$" + (parseFloat(booking.totalPrice) || 280).toFixed(2),
-          special_requests: booking.specialRequests || "None",
-          booking_date: booking.createdDate,
-          booking_id: booking.id,
-          status: "PENDING"
+          number_of_nights: booking.nights || 1,
+          total_amount: "$" + (parseFloat(booking.totalPrice || booking.total_amount) || 280).toFixed(2),
+          special_requests: booking.specialRequests || booking.special_requests || "None",
+          booking_id: booking.id || booking.booking_id,
+          booking_status: booking.status || "PENDING",
+          booking_date: booking.createdDate || new Date().toISOString().split('T')[0]
         }
       };
 
       console.log("=================================================");
-      console.log("REAL ADMIN GMAIL DISPATCH: sk80139082@gmail.com");
-      console.log("Statement: New room reservation received.");
+      console.log("REAL ADMIN GMAIL DISPATCH TO: sk8013908@gmail.com");
+      console.log("Subject: New Room Booking - Velora Grand Hotel & Spa");
       console.log(JSON.stringify(payload, null, 2));
       console.log("=================================================");
 
