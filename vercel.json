@@ -1,0 +1,8 @@
+{
+  "version": 2,
+  "cleanUrls": true,
+  "routes": [
+    { "src": "/api/send-booking-email", "dest": "/api/send-booking-email.ts" },
+    { "handle": "filesystem" }
+  ]
+}

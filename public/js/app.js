@@ -223,22 +223,27 @@ const FALLBACK_ROOMS_DATA = [
   }
 ];
 
-function renderRooms(filterCategory = "all") {
+async function renderRooms(filterCategory = "all") {
   const container = document.getElementById("roomsContainer");
   if (!container) return;
 
-  let roomsList = (window.VELORA_ROOMS && window.VELORA_ROOMS.length > 0)
-    ? window.VELORA_ROOMS
-    : ((window.VELORA_DATA && window.VELORA_DATA.rooms && window.VELORA_DATA.rooms.length > 0)
-      ? window.VELORA_DATA.rooms
-      : FALLBACK_ROOMS_DATA);
+  let roomsList = (window.VeloraSupabase && typeof window.VeloraSupabase.getRooms === "function")
+    ? await window.VeloraSupabase.getRooms()
+    : ((window.VELORA_ROOMS && window.VELORA_ROOMS.length > 0)
+      ? window.VELORA_ROOMS
+      : ((window.VELORA_DATA && window.VELORA_DATA.rooms && window.VELORA_DATA.rooms.length > 0)
+        ? window.VELORA_DATA.rooms
+        : FALLBACK_ROOMS_DATA));
+
+  window.VELORA_ROOMS = roomsList;
 
   const rooms = roomsList.filter(room => {
     if (filterCategory === "all") return true;
-    if (filterCategory === "rooms") return room.category === "rooms";
-    if (filterCategory === "suites") return room.category === "suites" || room.category === "residences";
-    if (filterCategory === "presidential") return room.category === "presidential" || room.category === "royal" || room.id.includes("presidential") || room.id.includes("royal");
-    return room.category === filterCategory;
+    const cat = (room.category || room.type || "").toLowerCase();
+    if (filterCategory === "rooms") return cat.includes("room") || !cat.includes("suite");
+    if (filterCategory === "suites") return cat.includes("suite") || cat.includes("residence");
+    if (filterCategory === "presidential") return cat.includes("presidential") || cat.includes("royal") || (room.id && room.id.includes("presidential"));
+    return cat.includes(filterCategory);
   });
 
   if (rooms.length === 0) {
@@ -248,13 +253,13 @@ function renderRooms(filterCategory = "all") {
 
   container.innerHTML = rooms.map(room => {
     const safeTitle = (room.title || room.name || 'Luxury Room').replace(/'/g, "\\'");
-    const safeImage = room.image || 'https://images.unsplash.com/photo-1618773928121-c32242e63f39?auto=format&fit=crop&w=1200&q=80';
+    const safeImage = room.image || room.main_image || 'https://images.unsplash.com/photo-1618773928121-c32242e63f39?auto=format&fit=crop&w=1200&q=80';
     return `
     <div class="col-lg-4 col-md-6 mb-4">
       <div class="room-card">
         <div class="room-img-wrapper">
           <img src="${safeImage}" alt="${safeTitle}" class="room-img" loading="lazy" onerror="handleImgError(this, '${safeTitle}')">
-          <span class="room-badge">${room.badge || 'Luxury'}</span>
+          <span class="room-badge">${room.badge || room.status || 'Available'}</span>
           <div class="room-price-tag">
             <span class="room-price-amount">$${room.price}</span> <small class="text-white-50">/ night</small>
           </div>
@@ -263,7 +268,7 @@ function renderRooms(filterCategory = "all") {
           <h3 class="room-title text-emerald">${room.title || room.name}</h3>
           <div class="room-specs">
             <span><i class="fas fa-vector-square"></i> ${room.size || '50 m²'}</span>
-            <span><i class="fas fa-users"></i> ${room.guests || '2 Guests'}</span>
+            <span><i class="fas fa-users"></i> ${room.guests || room.occupancy || '2 Guests'}</span>
             <span><i class="fas fa-bed"></i> ${room.bed || '1 King Bed'}</span>
           </div>
           <p class="room-desc">${room.description || ''}</p>
@@ -917,61 +922,61 @@ function calculateBookingTotal() {
 }
 
 function sendBookingEmailNotification(booking) {
-  const serviceId = (typeof process !== "undefined" && process.env && process.env.VITE_EMAILJS_SERVICE_ID) || window.EMAILJS_SERVICE_ID || "service_velora_hotel";
-  const templateId = (typeof process !== "undefined" && process.env && process.env.VITE_EMAILJS_TEMPLATE_ID) || window.EMAILJS_TEMPLATE_ID || "template_booking_notification";
-  const publicKey = (typeof process !== "undefined" && process.env && process.env.VITE_EMAILJS_PUBLIC_KEY) || window.EMAILJS_PUBLIC_KEY || "user_velora_key";
-
-  const emailPayload = {
-    service_id: serviceId,
-    template_id: templateId,
-    user_id: publicKey,
-    template_params: {
-      to_email: "sk8013908@gmail.com",
-      subject: "New Hotel Room Booking - Velora Grand Hotel & Spa",
-      statement: "New room reservation received.",
-      customer_name: booking.guestName,
-      customer_email: booking.email,
-      customer_phone: booking.phone || "N/A",
-      room_name: booking.roomTitle,
-      room_type: booking.roomType || "Luxury Suite",
-      check_in_date: booking.checkIn,
-      check_out_date: booking.checkOut,
-      number_of_nights: booking.nights,
-      adults: booking.adults || 2,
-      children: booking.children || 0,
-      room_price: "$" + (booking.pricePerNight || 280),
-      total_booking_amount: "$" + booking.totalPrice.toFixed(2),
-      special_requests: booking.specialRequests || "None",
-      booking_date: booking.createdDate,
-      booking_id: booking.id
-    }
+  const payload = {
+    booking_id: booking.id,
+    customer_name: booking.guestName,
+    customer_email: booking.email,
+    customer_phone: booking.phone || "N/A",
+    room_name: booking.roomTitle || booking.roomType || "Luxury Suite",
+    check_in_date: booking.checkIn,
+    check_out_date: booking.checkOut,
+    adults: booking.adults || 2,
+    children: booking.children || 0,
+    number_of_nights: booking.nights || 1,
+    total_amount: "$" + (parseFloat(booking.totalPrice) || 280).toFixed(2),
+    special_requests: booking.specialRequests || "None",
+    booking_status: booking.status || "PENDING",
+    booking_date: booking.createdDate || new Date().toISOString().split("T")[0]
   };
 
   console.log("=================================================");
-  console.log("REAL GMAIL NOTIFICATION DISPATCH (sk8013908@gmail.com)");
-  console.log("Subject: New Hotel Room Booking - Velora Grand Hotel & Spa");
-  console.log("Statement: New room reservation received.");
-  console.log("Payload:", JSON.stringify(emailPayload, null, 2));
+  console.log("DISPATCHING TO SERVERLESS EMAIL API: /api/send-booking-email");
+  console.log("Target: sk8013908@gmail.com");
+  console.log("Payload:", JSON.stringify(payload, null, 2));
   console.log("=================================================");
 
-  // Send via EmailJS REST API (Works directly from static frontend / Vercel deployment)
+  // 1. Call secure serverless backend endpoint
+  fetch("/api/send-booking-email", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(payload)
+  })
+  .then(async res => {
+    const data = await res.json().catch(() => ({}));
+    console.log("Server API Email Dispatch Result:", data);
+  })
+  .catch(err => {
+    console.warn("Server email API fetch note:", err);
+  });
+
+  // 2. EmailJS REST API fallback
   fetch("https://api.emailjs.com/api/v1.0/email/send", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(emailPayload)
-  }).then(res => {
-    console.log("EmailJS API response status:", res.status);
-    if (res.ok) {
-      console.log("✓ Real Gmail notification successfully sent to sk8013908@gmail.com!");
-    } else {
-      console.warn("EmailJS API return code:", res.status);
-    }
-  }).catch(err => {
-    console.error("EmailJS dispatch error:", err);
-  });
+    body: JSON.stringify({
+      service_id: "service_velora_hotel",
+      template_id: "template_booking_notification",
+      user_id: "user_velora_key",
+      template_params: {
+        to_email: "sk8013908@gmail.com",
+        subject: "New Room Booking - Velora Grand Hotel & Spa",
+        ...payload
+      }
+    })
+  }).catch(() => {});
 }
 
-function processBookingSubmit(e) {
+async function processBookingSubmit(e) {
   e.preventDefault();
 
   const name = document.getElementById("bookName").value;
@@ -984,13 +989,14 @@ function processBookingSubmit(e) {
   const roomId = document.getElementById("bookRoomSelect").value;
   const specialRequests = document.getElementById("bookSpecialRequests").value;
 
-  const room = window.VELORA_DATA.rooms.find(r => r.id === roomId);
+  const roomsList = window.VELORA_ROOMS || (window.VELORA_DATA ? window.VELORA_DATA.rooms : []);
+  const room = roomsList.find(r => r.id === roomId);
   const totalStr = document.getElementById("summaryTotal").textContent;
-  const totalNum = parseFloat(totalStr.replace("$", ""));
+  const totalNum = parseFloat(totalStr.replace("$", "")) || 280;
 
   const checkInDate = new Date(checkIn);
   const checkOutDate = new Date(checkOut);
-  const nights = Math.ceil((checkOutDate - checkInDate) / (1000 * 60 * 60 * 24));
+  const nights = Math.max(1, Math.ceil((checkOutDate - checkInDate) / (1000 * 60 * 60 * 24)));
 
   const bookingCode = "VEL-" + Math.floor(1000 + Math.random() * 9000);
   const numAdults = parseInt(adultsVal || "2", 10);
@@ -1002,8 +1008,8 @@ function processBookingSubmit(e) {
     email: email,
     phone: phone,
     roomId: roomId,
-    roomTitle: room ? room.title : "Luxury Suite",
-    roomType: room ? (room.badge || room.category || "Luxury Suite") : "Luxury Suite",
+    roomTitle: room ? (room.title || room.name) : "Luxury Suite",
+    roomType: room ? (room.badge || room.category || room.type || "Luxury Suite") : "Luxury Suite",
     checkIn: checkIn,
     checkOut: checkOut,
     nights: nights,
@@ -1013,23 +1019,25 @@ function processBookingSubmit(e) {
     specialRequests: specialRequests || "None",
     pricePerNight: room ? room.price : 280,
     totalPrice: totalNum,
-    status: "Confirmed",
+    status: "PENDING",
     createdDate: new Date().toISOString().split("T")[0]
   };
 
-  // Store in LocalStorage
-  const existingBookings = JSON.parse(localStorage.getItem("velora_bookings") || "[]");
-  existingBookings.unshift(newBooking);
-  localStorage.setItem("velora_bookings", JSON.stringify(existingBookings));
-
-  // Trigger Real Gmail Notification
-  sendBookingEmailNotification(newBooking);
+  // Save to Supabase (and trigger real Gmail notification to sk8013908@gmail.com)
+  if (window.VeloraSupabase && typeof window.VeloraSupabase.saveNewBooking === "function") {
+    await window.VeloraSupabase.saveNewBooking(newBooking);
+  } else {
+    const existingBookings = JSON.parse(localStorage.getItem("velora_bookings") || "[]");
+    existingBookings.unshift(newBooking);
+    localStorage.setItem("velora_bookings", JSON.stringify(existingBookings));
+    sendBookingEmailNotification(newBooking);
+  }
 
   // Show Confirmation Modal
   showBookingConfirmationModal(newBooking);
 
   // Trigger Toast & Reset Form
-  showToast("Reservation Confirmed!", `Booking ${bookingCode} saved. Notification sent to sk8013908@gmail.com.`);
+  showToast("Reservation Submitted!", `Booking ${bookingCode} recorded (Status: PENDING). Admin notified.`);
   e.target.reset();
   initBookingSystem();
 }
@@ -1041,12 +1049,12 @@ function showBookingConfirmationModal(booking) {
   modalBody.innerHTML = `
     <div class="text-center mb-4">
       <div class="d-inline-flex align-items-center justify-content-center bg-emerald text-gold rounded-circle mb-3" style="width:70px; height:70px; font-size:2rem; border:2px solid #C9A96E;">
-        <i class="fas fa-check"></i>
+        <i class="fas fa-clock"></i>
       </div>
-      <h3 class="font-heading text-emerald mb-1">Reservation Confirmed!</h3>
-      <p class="text-muted fs-7">Thank you for choosing Velora Grand Hotel & Spa.</p>
-      <div class="badge bg-gold text-dark fs-6 py-2 px-3 border mb-2">Reservation ID: ${booking.id}</div>
-      <div class="text-success fs-8"><i class="fas fa-paper-plane me-1"></i> Notification sent to <strong>sk8013908@gmail.com</strong></div>
+      <h3 class="font-heading text-emerald mb-1">Reservation Submitted!</h3>
+      <p class="text-muted fs-7">Your booking request has been submitted to management for approval.</p>
+      <div class="badge bg-warning text-dark fs-6 py-2 px-3 border mb-2">Reservation ID: ${booking.id} • STATUS: PENDING</div>
+      <div class="text-success fs-8"><i class="fas fa-paper-plane me-1"></i> Admin notification sent to <strong>sk8013908@gmail.com</strong></div>
     </div>
 
     <div class="bg-ivory p-3 rounded border mb-3">
@@ -1062,7 +1070,7 @@ function showBookingConfirmationModal(booking) {
     </div>
 
     <div class="d-flex justify-content-between align-items-center bg-emerald text-white p-3 rounded">
-      <span class="fs-7 text-gold">Total Paid / Guaranteed:</span>
+      <span class="fs-7 text-gold">Total Amount Due:</span>
       <strong class="font-heading fs-3 text-gold">$${booking.totalPrice.toFixed(2)}</strong>
     </div>
   `;
@@ -1139,40 +1147,53 @@ function openMyBookingsModal() {
   modal.show();
 }
 
-function initMyBookingsPage() {
+async function initMyBookingsPage() {
   const container = document.getElementById("myBookingsPageContainer");
   if (!container) return;
 
-  const stored = JSON.parse(localStorage.getItem("velora_bookings") || "[]");
-  const initial = window.VELORA_DATA ? window.VELORA_DATA.initialBookings : [];
-  const allBookings = stored.length > 0 ? stored : initial;
-
-  if (allBookings.length === 0) {
-    container.innerHTML = `
-      <div class="card p-5 text-center">
-        <i class="fas fa-calendar-times text-gold fs-1 mb-3"></i>
-        <h3 class="font-heading text-emerald mb-2">No Active Reservations Found</h3>
-        <p class="text-muted mb-4">You have not placed any room reservations yet with Velora Grand Hotel & Spa.</p>
-        <div>
-          <a href="booking.html" class="btn btn-gold">
-            <i class="fas fa-calendar-plus me-2"></i> Book Your First Stay
-          </a>
-        </div>
-      </div>
-    `;
+  let allBookings = [];
+  if (window.VeloraSupabase && typeof window.VeloraSupabase.getBookings === "function") {
+    allBookings = await window.VeloraSupabase.getBookings();
   } else {
-    container.innerHTML = `
-      <div class="card p-4 border-gold shadow-sm">
-        <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-2">
-          <div>
-            <h3 class="font-heading text-emerald mb-0">Your Active & Past Stay History</h3>
-            <span class="text-muted fs-7">Manage, review, or modify your current guest reservations</span>
-          </div>
-          <a href="booking.html" class="btn btn-gold btn-sm">
-            <i class="fas fa-plus me-1"></i> New Reservation
-          </a>
+    const stored = JSON.parse(localStorage.getItem("velora_bookings") || "[]");
+    const initial = window.VELORA_DATA ? window.VELORA_DATA.initialBookings : [];
+    allBookings = stored.length > 0 ? stored : initial;
+  }
+
+  container.innerHTML = `
+    <div class="card p-4 border-gold shadow-sm mb-4 bg-dark-emerald text-white">
+      <h4 class="font-heading text-gold mb-2"><i class="fas fa-search me-2"></i>Lookup Reservation</h4>
+      <p class="text-white-50 fs-7 mb-3">Enter your Booking Reference ID and Email Address to check live approval status.</p>
+      <form id="bookingLookupForm" onsubmit="handleBookingLookupSubmit(event)" class="row g-3">
+        <div class="col-md-5">
+          <label class="form-label fs-7 text-gold">Booking ID (e.g., VEL-1001)</label>
+          <input type="text" id="lookupId" class="form-control" placeholder="VEL-XXXX" required>
         </div>
-        
+        <div class="col-md-5">
+          <label class="form-label fs-7 text-gold">Guest Email</label>
+          <input type="email" id="lookupEmail" class="form-control" placeholder="guest@example.com" required>
+        </div>
+        <div class="col-md-2 d-flex align-items-end">
+          <button type="submit" class="btn btn-gold w-100"><i class="fas fa-search me-1"></i> Lookup</button>
+        </div>
+      </form>
+      <div id="lookupResultContainer" class="mt-3"></div>
+    </div>
+
+    <div class="card p-4 border-gold shadow-sm">
+      <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-2">
+        <div>
+          <h3 class="font-heading text-emerald mb-0">All Guest Reservations</h3>
+          <span class="text-muted fs-7">Real-time room reservation database status</span>
+        </div>
+        <a href="booking.html" class="btn btn-gold btn-sm">
+          <i class="fas fa-plus me-1"></i> New Reservation
+        </a>
+      </div>
+      
+      ${allBookings.length === 0 ? `
+        <div class="text-center py-4 text-muted">No reservations recorded yet.</div>
+      ` : `
         <div class="table-responsive">
           <table class="table table-velora align-middle">
             <thead>
@@ -1188,51 +1209,109 @@ function initMyBookingsPage() {
               </tr>
             </thead>
             <tbody>
-              ${allBookings.map(b => `
+              ${allBookings.map(b => {
+                const statusUpper = (b.status || 'PENDING').toUpperCase();
+                let statusBadge = 'badge bg-warning text-dark';
+                if (statusUpper === 'CONFIRMED') statusBadge = 'badge bg-success text-white';
+                if (statusUpper === 'CANCELLED') statusBadge = 'badge bg-danger text-white';
+
+                return `
                 <tr>
                   <td><strong class="text-emerald font-heading">${b.id}</strong></td>
-                  <td>${b.guestName}</td>
-                  <td>${b.roomTitle}</td>
-                  <td><small class="d-block fw-bold">${b.checkIn}</small><small class="text-muted">to ${b.checkOut}</small></td>
-                  <td>${b.guests}</td>
-                  <td><strong class="text-gold font-heading fs-5">$${typeof b.totalPrice === 'number' ? b.totalPrice.toFixed(2) : b.totalPrice}</strong></td>
+                  <td>${b.guestName || b.guest_name}</td>
+                  <td>${b.roomTitle || b.room_title || b.room_type}</td>
+                  <td><small class="d-block fw-bold">${b.checkIn || b.check_in}</small><small class="text-muted">to ${b.checkOut || b.check_out}</small></td>
+                  <td>${b.guests || (b.adults + ' Adults')}</td>
+                  <td><strong class="text-gold font-heading fs-5">$${typeof b.totalPrice === 'number' ? b.totalPrice.toFixed(2) : (b.totalPrice || b.total_amount)}</strong></td>
                   <td>
-                    <span class="badge-status ${b.status.toLowerCase().replace(' ', '-')}">${b.status}</span>
+                    <span class="${statusBadge} px-2 py-1 fs-8">${statusUpper}</span>
                   </td>
                   <td>
-                    ${b.status === "Confirmed" ? `
+                    ${statusUpper === "CONFIRMED" || statusUpper === "PENDING" ? `
                       <button class="btn btn-outline-danger btn-sm fs-8 py-1" onclick="cancelReservation('${b.id}')">Cancel</button>
                     ` : '<span class="text-muted fs-8">N/A</span>'}
                   </td>
                 </tr>
-              `).join('')}
+              `}).join('')}
             </tbody>
           </table>
         </div>
-      </div>
-    `;
-  }
+      `}
+    </div>
+  `;
 }
 
-function cancelReservation(bookingId) {
-  if (!confirm(`Are you sure you want to cancel reservation ${bookingId}?`)) return;
+async function handleBookingLookupSubmit(e) {
+  e.preventDefault();
+  const id = document.getElementById("lookupId").value.trim();
+  const email = document.getElementById("lookupEmail").value.trim();
+  const resultDiv = document.getElementById("lookupResultContainer");
 
-  let stored = JSON.parse(localStorage.getItem("velora_bookings") || "[]");
-  if (stored.length === 0 && window.VELORA_DATA) {
-    stored = [...window.VELORA_DATA.initialBookings];
+  if (!resultDiv) return;
+  resultDiv.innerHTML = `<div class="text-gold fs-7 py-2"><i class="fas fa-spinner fa-spin me-2"></i>Searching database...</div>`;
+
+  let booking = null;
+  if (window.VeloraSupabase && typeof window.VeloraSupabase.lookupBooking === "function") {
+    booking = await window.VeloraSupabase.lookupBooking(id, email);
   }
 
-  const booking = stored.find(b => b.id === bookingId);
-  if (booking) {
-    booking.status = "Cancelled";
-    localStorage.setItem("velora_bookings", JSON.stringify(stored));
-    showToast("Booking Cancelled", `Reservation ${bookingId} has been cancelled.`);
-    if (document.getElementById("myBookingsModalBody")) {
-      openMyBookingsModal();
+  if (!booking) {
+    resultDiv.innerHTML = `
+      <div class="alert alert-danger bg-danger text-white border-0 py-2 fs-7 mb-0">
+        <i class="fas fa-exclamation-triangle me-2"></i>No matching reservation found for ID <strong>${id}</strong> and email <strong>${email}</strong>.
+      </div>
+    `;
+    return;
+  }
+
+  const statusUpper = (booking.status || 'PENDING').toUpperCase();
+  let statusBadge = 'badge bg-warning text-dark';
+  if (statusUpper === 'CONFIRMED') statusBadge = 'badge bg-success text-white';
+  if (statusUpper === 'CANCELLED') statusBadge = 'badge bg-danger text-white';
+
+  resultDiv.innerHTML = `
+    <div class="alert alert-success bg-dark-emerald text-white border border-gold p-3 rounded mb-0">
+      <div class="d-flex justify-content-between align-items-center mb-2">
+        <h5 class="font-heading text-gold mb-0">Reservation Details Found</h5>
+        <span class="${statusBadge} fs-7 py-1 px-3">STATUS: ${statusUpper}</span>
+      </div>
+      <div class="row g-2 fs-7 text-white-50">
+        <div class="col-md-6"><strong class="text-white">Booking ID:</strong> ${booking.id}</div>
+        <div class="col-md-6"><strong class="text-white">Guest Name:</strong> ${booking.guestName || booking.guest_name}</div>
+        <div class="col-md-6"><strong class="text-white">Room:</strong> ${booking.roomTitle || booking.room_title || booking.room_type}</div>
+        <div class="col-md-6"><strong class="text-white">Dates:</strong> ${booking.checkIn || booking.check_in} to ${booking.checkOut || booking.check_out}</div>
+        <div class="col-md-6"><strong class="text-white">Total Amount:</strong> $${booking.totalPrice || booking.total_amount}</div>
+        <div class="col-md-6"><strong class="text-white">Special Requests:</strong> ${booking.specialRequests || booking.special_requests || 'None'}</div>
+      </div>
+    </div>
+  `;
+}
+
+window.handleBookingLookupSubmit = handleBookingLookupSubmit;
+
+async function cancelReservation(bookingId) {
+  if (!confirm(`Are you sure you want to cancel reservation ${bookingId}?`)) return;
+
+  if (window.VeloraSupabase && typeof window.VeloraSupabase.updateBookingStatus === "function") {
+    await window.VeloraSupabase.updateBookingStatus(bookingId, "CANCELLED");
+  } else {
+    let stored = JSON.parse(localStorage.getItem("velora_bookings") || "[]");
+    if (stored.length === 0 && window.VELORA_DATA) {
+      stored = [...window.VELORA_DATA.initialBookings];
     }
-    if (document.getElementById("myBookingsPageContainer")) {
-      initMyBookingsPage();
+    const booking = stored.find(b => b.id === bookingId);
+    if (booking) {
+      booking.status = "Cancelled";
+      localStorage.setItem("velora_bookings", JSON.stringify(stored));
     }
+  }
+
+  showToast("Booking Cancelled", `Reservation ${bookingId} has been cancelled.`);
+  if (document.getElementById("myBookingsModalBody")) {
+    openMyBookingsModal();
+  }
+  if (document.getElementById("myBookingsPageContainer")) {
+    await initMyBookingsPage();
   }
 }
 

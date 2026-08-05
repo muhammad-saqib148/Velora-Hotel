@@ -922,56 +922,58 @@ function calculateBookingTotal() {
 }
 
 function sendBookingEmailNotification(booking) {
-  const serviceId = (typeof process !== "undefined" && process.env && process.env.VITE_EMAILJS_SERVICE_ID) || window.EMAILJS_SERVICE_ID || "service_velora_hotel";
-  const templateId = (typeof process !== "undefined" && process.env && process.env.VITE_EMAILJS_TEMPLATE_ID) || window.EMAILJS_TEMPLATE_ID || "template_booking_notification";
-  const publicKey = (typeof process !== "undefined" && process.env && process.env.VITE_EMAILJS_PUBLIC_KEY) || window.EMAILJS_PUBLIC_KEY || "user_velora_key";
-
-  const emailPayload = {
-    service_id: serviceId,
-    template_id: templateId,
-    user_id: publicKey,
-    template_params: {
-      to_email: "sk8013908@gmail.com",
-      subject: "New Room Booking - Velora Grand Hotel & Spa",
-      customer_name: booking.guestName,
-      customer_email: booking.email,
-      customer_phone: booking.phone || "N/A",
-      room_name: booking.roomTitle,
-      room_type: booking.roomType || "Luxury Suite",
-      check_in_date: booking.checkIn,
-      check_out_date: booking.checkOut,
-      adults: booking.adults || 2,
-      children: booking.children || 0,
-      number_of_nights: booking.nights || 1,
-      total_amount: "$" + (parseFloat(booking.totalPrice) || 280).toFixed(2),
-      special_requests: booking.specialRequests || "None",
-      booking_id: booking.id,
-      booking_status: booking.status || "PENDING",
-      booking_date: booking.createdDate || new Date().toISOString().split("T")[0]
-    }
+  const payload = {
+    booking_id: booking.id,
+    customer_name: booking.guestName,
+    customer_email: booking.email,
+    customer_phone: booking.phone || "N/A",
+    room_name: booking.roomTitle || booking.roomType || "Luxury Suite",
+    check_in_date: booking.checkIn,
+    check_out_date: booking.checkOut,
+    adults: booking.adults || 2,
+    children: booking.children || 0,
+    number_of_nights: booking.nights || 1,
+    total_amount: "$" + (parseFloat(booking.totalPrice) || 280).toFixed(2),
+    special_requests: booking.specialRequests || "None",
+    booking_status: booking.status || "PENDING",
+    booking_date: booking.createdDate || new Date().toISOString().split("T")[0]
   };
 
   console.log("=================================================");
-  console.log("REAL GMAIL NOTIFICATION DISPATCH (sk8013908@gmail.com)");
-  console.log("Subject: New Room Booking - Velora Grand Hotel & Spa");
-  console.log("Payload:", JSON.stringify(emailPayload, null, 2));
+  console.log("DISPATCHING TO SERVERLESS EMAIL API: /api/send-booking-email");
+  console.log("Target: sk8013908@gmail.com");
+  console.log("Payload:", JSON.stringify(payload, null, 2));
   console.log("=================================================");
 
-  // Send via EmailJS REST API
+  // 1. Call secure serverless backend endpoint
+  fetch("/api/send-booking-email", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(payload)
+  })
+  .then(async res => {
+    const data = await res.json().catch(() => ({}));
+    console.log("Server API Email Dispatch Result:", data);
+  })
+  .catch(err => {
+    console.warn("Server email API fetch note:", err);
+  });
+
+  // 2. EmailJS REST API fallback
   fetch("https://api.emailjs.com/api/v1.0/email/send", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(emailPayload)
-  }).then(res => {
-    console.log("EmailJS API response status:", res.status);
-    if (res.ok) {
-      console.log("✓ Real Gmail notification successfully sent to sk8013908@gmail.com!");
-    } else {
-      console.warn("EmailJS API return code:", res.status);
-    }
-  }).catch(err => {
-    console.error("EmailJS dispatch error:", err);
-  });
+    body: JSON.stringify({
+      service_id: "service_velora_hotel",
+      template_id: "template_booking_notification",
+      user_id: "user_velora_key",
+      template_params: {
+        to_email: "sk8013908@gmail.com",
+        subject: "New Room Booking - Velora Grand Hotel & Spa",
+        ...payload
+      }
+    })
+  }).catch(() => {});
 }
 
 async function processBookingSubmit(e) {
